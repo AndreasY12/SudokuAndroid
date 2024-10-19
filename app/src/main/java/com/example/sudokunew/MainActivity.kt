@@ -96,24 +96,55 @@ fun SudokuCell(number: Int, modifier: Modifier) {
 
 @Composable
 fun SudokuGrid(modifier: Modifier = Modifier) {
-    val sudokuBoard = SudokuBoard() // Create an instance of SudokuBoard
-    val board = sudokuBoard.getBoard() // Get the board
+    val sudokuBoard = SudokuBoard() // Instance of SudokuBoard class
+    val board = sudokuBoard.getBoard() // Get the 9x9 board
 
+    // Create a 3x3 grid of subgrids, each containing 3x3 cells
     LazyVerticalGrid(
-        columns = GridCells.Fixed(9),
+        columns = GridCells.Fixed(3),  // 3 large grids horizontally
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        items(81) { index ->
-            val row = index / 9
-            val col = index % 9
-            val number = board[row][col]
+        items(9) { gridIndex ->  // 9 total subgrids
+            val rowStart = (gridIndex / 3) * 3
+            val colStart = (gridIndex % 3) * 3
 
-            SudokuCell(
-                number = number,
+            // Each 3x3 subgrid
+            SudokuSubGrid(
+                board = board,
+                rowStart = rowStart,
+                colStart = colStart,
                 modifier = Modifier
+
+                    .border(2.dp, Color.Black)  // Border around 3x3 subgrids
             )
+        }
+    }
+}
+
+@Composable
+fun SudokuSubGrid(
+    board: Array<Array<Int>>,
+    rowStart: Int,
+    colStart: Int,
+    modifier: Modifier = Modifier
+) {
+    // Display a 3x3 grid inside the subgrid
+    Column(
+        modifier = modifier.aspectRatio(1f)  // Keep the subgrid square
+    ) {
+        for (row in rowStart until rowStart + 3) {
+            Row(modifier = Modifier.weight(1f)) {
+                for (col in colStart until colStart + 3) {
+                    SudokuCell(
+                        number = board[row][col],
+                        modifier = Modifier
+                            .weight(1f)
+                            .border(0.5.dp, Color.LightGray)  // Optional subtle inner borders for cells
+                    )
+                }
+            }
         }
     }
 }
