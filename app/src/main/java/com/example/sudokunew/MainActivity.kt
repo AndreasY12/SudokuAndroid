@@ -166,7 +166,8 @@ fun NumberPad(modifier: Modifier = Modifier) {
                     ) {
                         Text(
                             text = number.toString(),
-                            fontSize = 30.sp
+                            fontSize = 30.sp,
+                            color = Color.Black
                         )
                     }
                 }
