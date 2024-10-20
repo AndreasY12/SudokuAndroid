@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,9 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -33,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -183,16 +183,16 @@ fun Toolbar(modifier: Modifier = Modifier){
         horizontalArrangement = Arrangement.SpaceEvenly)
     {
         IconButton(onClick = { /* Handle undo */ }) {
-            Icon(Icons.Default.Refresh, contentDescription = "Undo")
+            Image(painter = painterResource(id = R.drawable.baseline_undo_24), contentDescription = "Undo")
         }
         IconButton(onClick = { /* Handle erase */ }) {
-            Icon(Icons.Default.Delete, contentDescription = "Erase")
+            Icon(Icons.Default.Delete, contentDescription = "Clear")
         }
         IconButton(onClick = { /* Handle notes */ }) {
             Icon(Icons.Default.Edit, contentDescription = "Notes")
         }
         IconButton(onClick = { /* Handle hints */ }) {
-            Icon(Icons.Default.Done, contentDescription = "Hints")
+            Image(painter = painterResource(id = R.drawable.baseline_lightbulb_24), contentDescription = "Hints")
         }
     }
 
