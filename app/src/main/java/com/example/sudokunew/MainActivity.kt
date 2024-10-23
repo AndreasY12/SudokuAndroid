@@ -96,7 +96,7 @@ fun SudokuCell(number: Int, modifier: Modifier) {
 
 @Composable
 fun SudokuGrid(modifier: Modifier = Modifier) {
-    val sudokuBoard = SudokuBoard() // Instance of SudokuBoard class
+    val sudokuBoard = SudokuBoard(Difficulty.HARD) // Instance of SudokuBoard class
     val board = sudokuBoard.getBoard() // Get the 9x9 board
 
     // Create a 3x3 grid of subgrids, each containing 3x3 cells
