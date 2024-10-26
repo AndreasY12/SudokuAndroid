@@ -6,30 +6,89 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+enum class Difficulty(val cellsToRemove: Int) {
+    EASY(30),
+    MEDIUM(40),
+    HARD(50);
+}
+
 class SudokuViewModel : ViewModel() {
     private val _state = MutableStateFlow(SudokuState())
     val state: StateFlow<SudokuState> = _state.asStateFlow()
-
-    private var originalBoard: Array<Array<Int>>? = null
 
     init {
         startNewGame(Difficulty.MEDIUM)
     }
 
     fun startNewGame(difficulty: Difficulty) {
-        val sudokuBoard = SudokuBoard(difficulty)
-        originalBoard = sudokuBoard.getBoard()
+        val originalBoard = Array(9) { Array(9) { 0 } }
+        fillBoard(originalBoard)
+        removeNumbers(originalBoard, difficulty.cellsToRemove)
 
         val initialBoard = List(9) { row ->
             List(9) { col ->
                 SudokuCell(
-                    value = originalBoard!![row][col],
-                    isOriginal = originalBoard!![row][col] != 0
+                    value = originalBoard[row][col],
+                    isOriginal = originalBoard[row][col] != 0
                 )
             }
         }
 
         _state.value = SudokuState(board = initialBoard)
+    }
+
+    private fun fillBoard(board: Array<Array<Int>>): Boolean {
+        for (row in 0 until 9) {
+            for (col in 0 until 9) {
+                if (board[row][col] == 0) {
+                    val numbers = (1..9).shuffled()
+                    for (number in numbers) {
+                        if (isValid(board, row, col, number)) {
+                            board[row][col] = number
+                            if (fillBoard(board)) {
+                                return true
+                            }
+                            board[row][col] = 0 // Backtrack
+                        }
+                    }
+                    return false // No valid number found
+                }
+            }
+        }
+        return true // Board is filled
+    }
+
+    private fun removeNumbers(board: Array<Array<Int>>, cellsToRemove: Int) {
+        var count = 0
+        while (count < cellsToRemove) {
+            val row = (0 until 9).random()
+            val col = (0 until 9).random()
+            if (board[row][col] != 0) {
+                board[row][col] = 0
+                count++
+            }
+        }
+    }
+
+    private fun isValid(board: Array<Array<Int>>, row: Int, col: Int, number: Int): Boolean {
+        // Check row and column
+        for (i in 0 until 9) {
+            if (board[row][i] == number || board[i][col] == number) {
+                return false
+            }
+        }
+
+        // Check 3x3 box
+        val boxRowStart = row - row % 3
+        val boxColStart = col - col % 3
+        for (i in 0 until 3) {
+            for (j in 0 until 3) {
+                if (board[boxRowStart + i][boxColStart + j] == number) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     fun onCellSelected(row: Int, col: Int) {
@@ -93,7 +152,7 @@ class SudokuViewModel : ViewModel() {
     ): SudokuState {
         if (currentState.board[row][col].isOriginal) return currentState
 
-        val isValid = isValidMove(row, col, number)
+        val isValid = isValid(currentState.board.map { it.map { cell -> cell.value }.toTypedArray() }.toTypedArray(), row, col, number)
         return currentState.copy(
             board = currentState.board.mapIndexed { r, rowCells ->
                 rowCells.mapIndexed { c, cell ->
@@ -107,31 +166,6 @@ class SudokuViewModel : ViewModel() {
 
     fun toggleNotesMode() {
         _state.update { it.copy(isNotesMode = !it.isNotesMode) }
-    }
-
-    private fun isValidMove(row: Int, col: Int, number: Int): Boolean {
-        // Check row
-        for (c in 0..8) {
-            if (c != col && _state.value.board[row][c].value == number) return false
-        }
-
-        // Check column
-        for (r in 0..8) {
-            if (r != row && _state.value.board[r][col].value == number) return false
-        }
-
-        // Check 3x3 box
-        val boxRow = row - row % 3
-        val boxCol = col - col % 3
-        for (r in boxRow until boxRow + 3) {
-            for (c in boxCol until boxCol + 3) {
-                if ((r != row || c != col) && _state.value.board[r][c].value == number) {
-                    return false
-                }
-            }
-        }
-
-        return true
     }
 
     private fun checkCompletion() {
