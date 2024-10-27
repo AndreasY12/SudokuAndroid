@@ -214,7 +214,7 @@ fun NotesGrid(notes: Set<Int>) {
                     if (notes.contains(number)) {
                         Text(
                             text = number.toString(),
-                            fontSize = 10.sp,
+                            fontSize = 9.sp,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
                         )
