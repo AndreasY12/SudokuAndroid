@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,9 +23,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -40,10 +41,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,6 +72,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val state by viewModel.state.collectAsState()
+    var showDialog by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
@@ -100,11 +104,10 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                             contentDescription = ""
                         )
                     }
-                }
-                ,actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                }, actions = {
+                    IconButton(onClick = { showDialog = true }) {
                         Icon(
-                            Icons.Default.Info,
+                            Icons.AutoMirrored.Filled.Help,
                             contentDescription = ""
                         )
                     }
@@ -149,6 +152,60 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 confirmButton = {
                     TextButton(onClick = { viewModel.startNewGame(Difficulty.MEDIUM) }) {
                         Text("New Game")
+                    }
+                }
+            )
+        }
+        // Information dialog
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Icon Actions") },
+                text = {
+                    Column {
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.Undo,
+                                    contentDescription = "Undo",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text("Undo: Reverses the last action.")
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Clear",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text("Clear: Removes all numbers entered.")
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = "Notes",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text("Notes: Allows you to enter numbers as notes in a cell.")
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.Lightbulb,
+                                    contentDescription = "Hints",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text("Hints: Provides a helpful tip.")
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
                     }
                 }
             )
@@ -313,10 +370,8 @@ fun Toolbar(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         IconButton(onClick = { /* Handle undo */ }) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_undo_24),
-                contentDescription = "Undo"
-            )
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo")
+
         }
         IconButton(onClick = onClearClicked) {
             Icon(Icons.Default.Delete, contentDescription = "Clear")
@@ -331,18 +386,16 @@ fun Toolbar(
             )
         }
         IconButton(onClick = { /* Handle hints */ }) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_lightbulb_24),
-                contentDescription = "Hints"
-            )
+            Icon(Icons.Default.Lightbulb, contentDescription = "Clear")
         }
     }
 }
 
 @Composable
-fun ShowSolutionButton(modifier: Modifier = Modifier){
+fun ShowSolutionButton() {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
