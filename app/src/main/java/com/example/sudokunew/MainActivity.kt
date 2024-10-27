@@ -26,7 +26,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -79,6 +81,10 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = Color.Black,
+                    titleContentColor = Color.Black,
+                    actionIconContentColor = Color.Black
                 ),
                 title = {
                     Text(
@@ -95,6 +101,14 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                         )
                     }
                 }
+                ,actions = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = ""
+                        )
+                    }
+                }
             )
         }
 
@@ -106,7 +120,7 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 .padding(padding),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Spacer(modifier = Modifier.size(16.dp))
+            //Spacer(modifier = Modifier.size(8.dp))
             SudokuGrid(
                 board = state.board,
                 onCellSelected = viewModel::onCellSelected
@@ -122,6 +136,8 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 onNotesClicked = viewModel::toggleNotesMode,
                 onClearClicked = viewModel::clearCell
             )
+            Spacer(modifier = Modifier.size(8.dp))
+            ShowSolutionButton()
         }
 
         // Show completion dialog if game is complete
@@ -321,4 +337,23 @@ fun Toolbar(
             )
         }
     }
+}
+
+@Composable
+fun ShowSolutionButton(modifier: Modifier = Modifier){
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = { /* Handle show solution */ },
+            modifier = Modifier.fillMaxWidth(0.8f)
+        ) {
+            Text("Show Solution")
+        }
+    }
+
+
 }
