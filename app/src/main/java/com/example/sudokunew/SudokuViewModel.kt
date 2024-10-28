@@ -21,6 +21,10 @@ class SudokuViewModel : ViewModel() {
     }
 
     fun startNewGame(difficulty: Difficulty) {
+        //originalBoard : complete and solved Sudoku puzzle
+        //initialBoard :  represents the Sudoku puzzle as it will be presented to the player.
+        // Defines the game state that the player interacts with, while preserving the original values for validation and gameplay logic
+
         val originalBoard = Array(9) { Array(9) { 0 } }
         fillBoard(originalBoard)
         removeNumbers(originalBoard, difficulty.cellsToRemove)
@@ -48,14 +52,14 @@ class SudokuViewModel : ViewModel() {
                             if (fillBoard(board)) {
                                 return true
                             }
-                            board[row][col] = 0 // Backtrack
+                            board[row][col] = 0
                         }
                     }
-                    return false // No valid number found
+                    return false
                 }
             }
         }
-        return true // Board is filled
+        return true //Board filled
     }
 
     private fun removeNumbers(board: Array<Array<Int>>, cellsToRemove: Int) {
