@@ -12,15 +12,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Help
@@ -47,6 +53,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,12 +81,21 @@ class MainActivity : ComponentActivity() {
 fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    val layoutDirection = LocalLayoutDirection.current
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
+            .padding(
+                start = WindowInsets.safeDrawing
+                    .asPaddingValues()
+                    .calculateStartPadding(layoutDirection),
+                end = WindowInsets.safeDrawing
+                    .asPaddingValues()
+                    .calculateEndPadding(layoutDirection)
+            ),
+            //.statusBarsPadding()
+            //.navigationBarsPadding(),
         containerColor = Color.Transparent,
         contentColor = Color.Black,
         topBar = {
@@ -120,7 +137,8 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             //Spacer(modifier = Modifier.size(8.dp))
@@ -220,23 +238,33 @@ fun SudokuGrid(
     onCellSelected: (Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val gridHeight = screenHeight * 0.6f // Set grid to 60% of the screen height
+    Box(
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(max = gridHeight)
             .padding(8.dp)
     ) {
-        items(9) { gridIndex ->
-            val rowStart = (gridIndex / 3) * 3
-            val colStart = (gridIndex % 3) * 3
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            items(9) { gridIndex ->
+                val rowStart = (gridIndex / 3) * 3
+                val colStart = (gridIndex % 3) * 3
 
-            SudokuSubGrid(
-                board = board,
-                rowStart = rowStart,
-                colStart = colStart,
-                onCellSelected = onCellSelected,
-                modifier = Modifier.border(2.dp, Color.Black)
-            )
+                SudokuSubGrid(
+                    board = board,
+                    rowStart = rowStart,
+                    colStart = colStart,
+                    onCellSelected = onCellSelected,
+                    modifier = Modifier.border(2.dp, Color.Black)
+                )
+            }
         }
     }
 }
@@ -407,6 +435,4 @@ fun ShowSolutionButton() {
             Text("Show Solution")
         }
     }
-
-
 }
