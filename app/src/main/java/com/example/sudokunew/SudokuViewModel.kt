@@ -15,6 +15,7 @@ enum class Difficulty(val cellsToRemove: Int) {
 class SudokuViewModel : ViewModel() {
     private val _state = MutableStateFlow(SudokuState())
     val state: StateFlow<SudokuState> = _state.asStateFlow()
+    private var solutionBoard = Array(9) { Array(9) { 0 } }
 
     init {
         startNewGame(Difficulty.MEDIUM)
@@ -22,11 +23,13 @@ class SudokuViewModel : ViewModel() {
 
     fun startNewGame(difficulty: Difficulty) {
         //originalBoard : complete and solved Sudoku puzzle
+        //solutionBoard : represents the solution to the Sudoku puzzle to be used with ShowHint().
         //initialBoard :  represents the Sudoku puzzle as it will be presented to the player.
         // Defines the game state that the player interacts with, while preserving the original values for validation and gameplay logic
 
         val originalBoard = Array(9) { Array(9) { 0 } }
         fillBoard(originalBoard)
+        solutionBoard = originalBoard.map { it.copyOf() }.toTypedArray()
         removeNumbers(originalBoard, difficulty.cellsToRemove)
 
         val initialBoard = List(9) { row ->
@@ -182,6 +185,36 @@ class SudokuViewModel : ViewModel() {
         if (isComplete) {
             _state.update { it.copy(isComplete = true) }
         }
+    }
+
+    fun showHint() {
+        if (_state.value.isComplete) return
+
+        _state.update { currentState ->
+            var hintApplied = false
+
+            val newBoard = currentState.board.mapIndexed { r, rowCells ->
+                rowCells.mapIndexed { c, cell ->
+                    if (!cell.isOriginal && cell.value == 0 && !hintApplied) {
+                        val correctNumber = solutionBoard[r][c]
+                        if (correctNumber != 0) {
+                            hintApplied = true
+                            cell.copy(value = correctNumber, notes = emptySet(), isValid = true, isOriginal = true)
+                        } else cell
+                    } else cell
+                }
+            }
+
+            if (!hintApplied) {
+                currentState
+            } else {
+                currentState.copy(
+                    board = newBoard,
+                )
+            }
+        }
+
+        checkCompletion()
     }
 
     fun clearCell() {

@@ -155,7 +155,8 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
             Toolbar(
                 isNotesMode = state.isNotesMode,
                 onNotesClicked = viewModel::toggleNotesMode,
-                onClearClicked = viewModel::clearCell
+                onClearClicked = viewModel::clearCell,
+                onHintsClicked =  viewModel::showHint
             )
             Spacer(modifier = Modifier.size(8.dp))
             ShowSolutionButton()
@@ -304,7 +305,7 @@ fun SudokuCell(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .border(1.dp, Color.Black)
+            //.border(1.dp, Color.Black)
             .clickable(onClick = onClick)
             .background(
                 when {
@@ -327,6 +328,7 @@ fun SudokuCell(
     }
 }
 
+/*TODO Fix notes not appearing correctly on some screens*/
 @Composable
 fun NotesGrid(notes: Set<Int>) {
     Column(
@@ -390,6 +392,7 @@ fun NumberPad(
 fun Toolbar(
     isNotesMode: Boolean,
     onNotesClicked: () -> Unit,
+    onHintsClicked: () -> Unit,
     onClearClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -413,7 +416,7 @@ fun Toolbar(
                 tint = if (isNotesMode) Color.Blue else Color.Black
             )
         }
-        IconButton(onClick = { /* Handle hints */ }) {
+        IconButton(onClick = onHintsClicked) {
             Icon(Icons.Default.Lightbulb, contentDescription = "Clear")
         }
     }
