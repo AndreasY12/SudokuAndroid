@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Stack
 
 enum class Difficulty(val cellsToRemove: Int) {
     EASY(30),
@@ -16,6 +17,7 @@ class SudokuViewModel : ViewModel() {
     private val _state = MutableStateFlow(SudokuState())
     val state: StateFlow<SudokuState> = _state.asStateFlow()
     private var solutionBoard = Array(9) { Array(9) { 0 } }
+    private val history = Stack<SudokuState>()
 
     init {
         startNewGame(Difficulty.MEDIUM)
@@ -115,11 +117,13 @@ class SudokuViewModel : ViewModel() {
         val (row, col) = _state.value.selectedCell ?: return
 
         _state.update { currentState ->
-            if (currentState.isNotesMode) {
+            val newState = if (currentState.isNotesMode) {
                 handleNoteInput(currentState, row, col, number)
             } else {
                 handleNumberInput(currentState, row, col, number)
             }
+            history.push(currentState.copy())
+            newState
         }
 
         checkCompletion()
@@ -208,10 +212,12 @@ class SudokuViewModel : ViewModel() {
             if (!hintApplied) {
                 currentState
             } else {
+                history.push(currentState.copy())
                 currentState.copy(
                     board = newBoard,
                 )
             }
+
         }
 
         checkCompletion()
@@ -244,7 +250,7 @@ class SudokuViewModel : ViewModel() {
         if (_state.value.board[row][col].isOriginal) return
 
         _state.update { currentState ->
-            currentState.copy(
+           val newState= currentState.copy(
                 board = currentState.board.mapIndexed { r, rowCells ->
                     rowCells.mapIndexed { c, cell ->
                         if (r == row && c == col) {
@@ -253,6 +259,14 @@ class SudokuViewModel : ViewModel() {
                     }
                 }
             )
+            history.push(currentState.copy())
+            newState
+        }
+    }
+
+    fun undo(){
+        if (history.isNotEmpty()) {
+            _state.value = history.pop()
         }
     }
 }

@@ -156,7 +156,8 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 isNotesMode = state.isNotesMode,
                 onNotesClicked = viewModel::toggleNotesMode,
                 onClearClicked = viewModel::clearCell,
-                onHintsClicked =  viewModel::showHint
+                onHintsClicked =  viewModel::showHint,
+                onUndoClicked = viewModel::undo
             )
             Spacer(modifier = Modifier.size(8.dp))
             ShowSolutionButton(
@@ -396,13 +397,14 @@ fun Toolbar(
     onNotesClicked: () -> Unit,
     onHintsClicked: () -> Unit,
     onClearClicked: () -> Unit,
+    onUndoClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        IconButton(onClick = { /* Handle undo */ }) {
+        IconButton(onClick = onUndoClicked) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo")
 
         }
