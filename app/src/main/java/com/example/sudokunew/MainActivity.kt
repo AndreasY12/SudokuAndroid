@@ -243,7 +243,7 @@ fun SudokuGrid(
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val gridHeight = screenHeight * 0.6f // Set grid to 60% of the screen height
+    val gridHeight = screenHeight * 0.7f
     Box(
         modifier = modifier
             .fillMaxWidth()
