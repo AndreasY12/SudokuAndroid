@@ -159,7 +159,9 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 onHintsClicked =  viewModel::showHint
             )
             Spacer(modifier = Modifier.size(8.dp))
-            ShowSolutionButton()
+            ShowSolutionButton(
+                onSolutionClicked = viewModel::showSolution
+            )
         }
 
         // Show completion dialog if game is complete
@@ -423,7 +425,9 @@ fun Toolbar(
 }
 
 @Composable
-fun ShowSolutionButton() {
+fun ShowSolutionButton(
+    onSolutionClicked: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -432,7 +436,7 @@ fun ShowSolutionButton() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = { /* Handle show solution */ },
+            onClick = onSolutionClicked ,
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
             Text("Show Solution")

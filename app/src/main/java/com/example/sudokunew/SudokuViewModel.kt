@@ -217,6 +217,28 @@ class SudokuViewModel : ViewModel() {
         checkCompletion()
     }
 
+    fun showSolution() {
+        _state.update { currentState ->
+
+            val newBoard = currentState.board.mapIndexed { r, rowCells ->
+                rowCells.mapIndexed { c, cell ->
+                    if (!cell.isOriginal && cell.value == 0 ) {
+                        val correctNumber = solutionBoard[r][c]
+                        if (correctNumber != 0) {
+                            cell.copy(value = correctNumber, notes = emptySet(), isValid = true, isOriginal = true)
+                        } else cell
+                    } else cell
+                }
+            }
+
+            currentState.copy(
+                board = newBoard,
+            )
+        }
+
+        //checkCompletion()
+    }
+
     fun clearCell() {
         val (row, col) = _state.value.selectedCell ?: return
         if (_state.value.board[row][col].isOriginal) return
