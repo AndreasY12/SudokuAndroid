@@ -140,9 +140,9 @@ class SudokuViewModel : ViewModel() {
 
         val updatedNotes = if (currentCell.notes.contains(number)) {
             currentCell.notes - number
-        } else {
+        } else if (currentCell.notes.size < 6) {
             currentCell.notes + number
-        }
+        } else currentCell.notes
 
         return currentState.copy(
             board = currentState.board.mapIndexed { r, rowCells ->

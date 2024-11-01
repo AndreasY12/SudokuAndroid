@@ -331,31 +331,46 @@ fun SudokuCell(
     }
 }
 
-/*TODO Fix notes not appearing correctly on some screens*/
 @Composable
 fun NotesGrid(notes: Set<Int>) {
+    val limitedNotes = notes.take(6).toSet()
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        for (row in 0..2) {
-            Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                for (col in 0..2) {
-                    val number = row * 3 + col + 1
-                    if (notes.contains(number)) {
-                        Text(
-                            text = number.toString(),
-                            fontSize = 9.sp,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            limitedNotes.take(3).forEach { number ->
+                Text(
+                    text = number.toString(),
+                    fontSize = 10.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            limitedNotes.drop(3).take(3).forEach { number ->
+                Text(
+                    text = number.toString(),
+                    fontSize = 10.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
     }
