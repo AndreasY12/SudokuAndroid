@@ -122,7 +122,7 @@ class SudokuViewModel : ViewModel() {
             } else {
                 handleNumberInput(currentState, row, col, number)
             }
-            history.push(currentState.copy())
+            history.push(currentState.copy(isNotesMode = false))
             newState
         }
 
@@ -210,9 +210,10 @@ class SudokuViewModel : ViewModel() {
             }
 
             if (!hintApplied) {
+                history.push(currentState.copy(isNotesMode = false))
                 currentState
             } else {
-                history.push(currentState.copy())
+                history.push(currentState.copy(isNotesMode = false))
                 currentState.copy(
                     board = newBoard,
                 )
@@ -259,7 +260,7 @@ class SudokuViewModel : ViewModel() {
                     }
                 }
             )
-            history.push(currentState.copy())
+            history.push(currentState.copy(isNotesMode = false))
             newState
         }
     }
