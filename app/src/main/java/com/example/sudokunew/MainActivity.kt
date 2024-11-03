@@ -61,6 +61,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sudokunew.ui.theme.SudokuNewTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,6 +143,10 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Text(
+                text = "Time: ${formatTime(state.timer)}",
+                fontSize = 16.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally))
             SudokuGrid(
                 board = state.board,
                 onCellSelected = viewModel::onCellSelected
@@ -167,7 +172,7 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
             AlertDialog(
                 onDismissRequest = { /* Handle dismiss */ },
                 title = { Text("Congratulations!") },
-                text = { Text("You've completed the puzzle!") },
+                text = { Text("You've completed the puzzle in ${formatTime(state.timer)}!") },
                 confirmButton = {
                     TextButton(onClick = { viewModel.startNewGame(Difficulty.MEDIUM) }) {
                         Text("New Game")
@@ -464,4 +469,10 @@ private fun getDifficulty(difficulty: Difficulty): String {
         Difficulty.MEDIUM -> "Medium"
         Difficulty.HARD -> "Hard"
     }
+}
+
+private fun formatTime(milliseconds: Long): String {
+    val seconds = (milliseconds / 1000) % 60
+    val minutes = (milliseconds / 60000) % 60
+    return String.format(Locale.UK,"%02d:%02d", minutes, seconds)
 }

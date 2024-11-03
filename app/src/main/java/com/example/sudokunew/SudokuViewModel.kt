@@ -1,10 +1,15 @@
 package com.example.sudokunew
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Stack
 
 class SudokuViewModel : ViewModel() {
@@ -13,6 +18,7 @@ class SudokuViewModel : ViewModel() {
     private var solutionBoard = Array(9) { Array(9) { 0 } }
     private val history = Stack<SudokuState>()
     private val difficulty = Difficulty.MEDIUM
+    private var timerJob: Job? = null
 
     init {
         startNewGame(difficulty)
@@ -39,6 +45,8 @@ class SudokuViewModel : ViewModel() {
         }
 
         _state.value = SudokuState(board = initialBoard,difficulty = difficulty)
+        history.clear()
+        startTimer()
     }
 
 
@@ -184,6 +192,7 @@ class SudokuViewModel : ViewModel() {
         }
 
         if (isComplete) {
+            timerJob?.cancel()
             _state.update { it.copy(isComplete = true) }
         }
     }
@@ -266,5 +275,20 @@ class SudokuViewModel : ViewModel() {
         if (history.isNotEmpty()) {
             _state.value = history.pop()
         }
+    }
+
+    private fun startTimer(){
+        timerJob?.cancel()
+        _state.update { it.copy(timer = 0L) } // Reset timer
+
+        timerJob = viewModelScope.launch(Dispatchers.Main) {
+            while (!_state.value.isComplete) {
+                delay(1000) // Wait for 1 second
+                _state.update { currentState ->
+                    currentState.copy(timer = currentState.timer + 1000)
+                }
+            }
+        }
+
     }
 }
