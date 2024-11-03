@@ -82,6 +82,7 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
+    val difficulty = state.difficulty
 
     Scaffold(
         modifier = Modifier
@@ -109,7 +110,7 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 ),
                 title = {
                     Text(
-                        "Sudoku",
+                        "Sudoku - " + getDifficulty(difficulty),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -454,5 +455,13 @@ fun ShowSolutionButton(
         ) {
             Text("Show Solution")
         }
+    }
+}
+
+private fun getDifficulty(difficulty: Difficulty): String {
+    return when (difficulty) {
+        Difficulty.EASY -> "Easy"
+        Difficulty.MEDIUM -> "Medium"
+        Difficulty.HARD -> "Hard"
     }
 }
