@@ -7,20 +7,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Stack
 
-enum class Difficulty(val cellsToRemove: Int) {
-    EASY(30),
-    MEDIUM(40),
-    HARD(50);
-}
-
 class SudokuViewModel : ViewModel() {
     private val _state = MutableStateFlow(SudokuState())
     val state: StateFlow<SudokuState> = _state.asStateFlow()
     private var solutionBoard = Array(9) { Array(9) { 0 } }
     private val history = Stack<SudokuState>()
+    private val difficulty = Difficulty.MEDIUM
 
     init {
-        startNewGame(Difficulty.MEDIUM)
+        startNewGame(difficulty)
     }
 
     fun startNewGame(difficulty: Difficulty) {
@@ -43,8 +38,10 @@ class SudokuViewModel : ViewModel() {
             }
         }
 
-        _state.value = SudokuState(board = initialBoard)
+        _state.value = SudokuState(board = initialBoard,difficulty = difficulty)
     }
+
+
 
     private fun fillBoard(board: Array<Array<Int>>): Boolean {
         for (row in 0 until 9) {
