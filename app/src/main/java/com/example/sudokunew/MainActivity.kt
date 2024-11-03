@@ -141,17 +141,14 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            //Spacer(modifier = Modifier.size(8.dp))
             SudokuGrid(
                 board = state.board,
                 onCellSelected = viewModel::onCellSelected
             )
-            Spacer(modifier = Modifier.size(8.dp))
             NumberPad(
                 onNumberSelected = viewModel::onNumberInput,
                 isNotesMode = state.isNotesMode
             )
-            Spacer(modifier = Modifier.size(8.dp))
             Toolbar(
                 isNotesMode = state.isNotesMode,
                 onNotesClicked = viewModel::toggleNotesMode,
@@ -159,7 +156,6 @@ fun SudokuApp(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.
                 onHintsClicked =  viewModel::showHint,
                 onUndoClicked = viewModel::undo
             )
-            Spacer(modifier = Modifier.size(8.dp))
             ShowSolutionButton(
                 onSolutionClicked = viewModel::showSolution
             )
