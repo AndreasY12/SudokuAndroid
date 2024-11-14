@@ -25,25 +25,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.sudokunew.ui.theme.SudokuNewTheme
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAboutScreen() {
-    SudokuNewTheme {
-        AboutScreen()
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(navController:NavHostController) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "About") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"

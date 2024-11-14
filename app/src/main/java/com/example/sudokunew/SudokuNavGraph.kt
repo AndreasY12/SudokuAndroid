@@ -26,7 +26,7 @@ fun SudokuNavHost(
             RulesScreen()
         }
         composable("about"){
-            AboutScreen()
+            AboutScreen(navController = navController)
         }
 
 
