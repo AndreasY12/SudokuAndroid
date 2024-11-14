@@ -20,10 +20,10 @@ fun SudokuNavHost(
             StartScreen(navController = navController)
         }
         composable("game") {
-            GameScreen()
+            GameScreen(navController = navController)
         }
         composable("rules"){
-            RulesScreen()
+            RulesScreen(navController = navController)
         }
         composable("about"){
             AboutScreen(navController = navController)

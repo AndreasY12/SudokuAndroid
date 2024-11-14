@@ -1,5 +1,6 @@
 package com.example.sudokunew
 
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -164,13 +166,15 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
         .height(56.dp)
         .clip(buttonShape)
 
+    val context = LocalContext.current
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ElevatedButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("game") },
             modifier = buttonModifier,
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -197,7 +201,7 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
         }
 
         TextButton(
-            onClick = { /*TODO*/ },
+            onClick = {navController.navigate("rules")},
             modifier = buttonModifier,
             colors = ButtonDefaults.textButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary
@@ -225,7 +229,11 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
         Spacer(modifier = Modifier.height(16.dp))
 
         FilledTonalButton(
-            onClick = { /*TODO*/ },
+            onClick = {
+                if(context is Activity){
+                 context.finish()
+                }
+            },
             modifier = buttonModifier,
             colors = ButtonDefaults.filledTonalButtonColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer,

@@ -56,12 +56,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+               navController: NavHostController
+) {
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
@@ -99,7 +101,7 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = ""
