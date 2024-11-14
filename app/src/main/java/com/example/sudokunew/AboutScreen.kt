@@ -1,11 +1,14 @@
 package com.example.sudokunew
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -46,71 +49,111 @@ fun AboutScreen(navController:NavHostController) {
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp) // Add some padding around the content
-        ) {
-            // "Who Am I?" Section
-            Text(
-                text = "Who Am I?",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Hello, I am Andreas Yiangou. I am from Cyprus and currently a fourth year BSc Computer Science student at the University of Nicosia. " +
-                        "This app is the first app I have developed for Android and I am excited to share it with you.",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp),
-                textAlign = TextAlign.Justify
-            )
-
-            // Spacer between sections
-            Spacer(modifier = Modifier.padding(vertical = 16.dp))
-            Image(
-                painter = painterResource(R.drawable.portrait_placeholder),
-                contentDescription = "Profile Picture",
+         LazyColumn(
                 modifier = Modifier
-                    .size(150.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp) // Add some padding around the content
+                ) {
+            item {
+                // "Who Am I?" Section
+                Text(
+                    text = "Who Am I?",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Hello, I am Andreas Yiangou. I am from Cyprus and currently a fourth year BSc Computer Science student at the University of Nicosia. " +
+                            "This app is the first app I have developed for Android and I am excited to share it with you.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp),
+                    textAlign = TextAlign.Justify
+                )
+            }
 
-            // Spacer between sections
-            Spacer(modifier = Modifier.padding(vertical = 16.dp))
+            item {
+                // Spacer between sections
+                Spacer(modifier = Modifier.padding(vertical = 16.dp))
+            }
 
-            // "About the Project" Section
-            Text(
-                text = "About the Project",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "This Sudoku app aims to provide a simple yet elegant solution to solving" +
-                        " and playing Sudoku puzzles. The main goal of the project is to offer an intuitive" +
-                        " interface with features like easy puzzle generation, undo functionality, and a " +
-                        "clean design. It was developed in collaboration with Dr. Andreas Savva as part " +
-                        "of my final year project for my BSc in Computer Science at the University of Nicosia .",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp),
-                textAlign = TextAlign.Justify
-            )
-            Text(
-                text = "Thank you for checking out my app!",
-                color = Color.Blue,
-                style = MaterialTheme.typography.displayMedium.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .align(Alignment.CenterHorizontally) // Center the text horizontally
-            )
-            Text(
-                text = "Enjoy!",
-                color = Color.Blue,
-                style = MaterialTheme.typography.displayMedium.copy(fontSize = 32.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .align(Alignment.CenterHorizontally) // Center the text horizontally
-            )
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.portrait_placeholder),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(150.dp)
+                            .align(Alignment.Center)
+
+                    )
+                }
+            }
+
+            item {
+                // Spacer between sections
+                Spacer(modifier = Modifier.padding(vertical = 16.dp))
+            }
+
+            item {
+                // "About the Project" Section
+                Text(
+                    text = "About the Project",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "This Sudoku app aims to provide a simple yet elegant solution to solving" +
+                            " and playing Sudoku puzzles. The main goal of the project is to offer an intuitive" +
+                            " interface with features like easy puzzle generation, undo functionality, and a " +
+                            "clean design. It was developed in collaboration with Dr. Andreas Savva as part " +
+                            "of my final year project for my BSc in Computer Science at the University of Nicosia.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(top = 8.dp),
+                    textAlign = TextAlign.Justify
+                )
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Thank you for checking out my app!",
+                        color = Color.Blue,
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Enjoy!",
+                        color = Color.Blue,
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            }
         }
     }
 }
