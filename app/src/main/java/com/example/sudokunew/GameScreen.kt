@@ -36,6 +36,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -53,7 +54,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -61,13 +61,16 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-               navController: NavHostController
+fun GameScreen(
+    viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     val difficulty = state.difficulty
+
+    val colors = MaterialTheme.colorScheme
 
     Scaffold(
         modifier = Modifier
@@ -80,45 +83,42 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
                     .asPaddingValues()
                     .calculateEndPadding(layoutDirection)
             ),
-        //.statusBarsPadding()
-        //.navigationBarsPadding(),
-        containerColor = Color.Transparent,
-        contentColor = Color.Black,
-        topBar = {
+        containerColor = colors.background, contentColor = colors.onBackground, topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = Color.Black,
-                    titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
+                    navigationIconContentColor = colors.onBackground,
+                    titleContentColor = colors.onBackground,
+                    actionIconContentColor = colors.onBackground
                 ),
                 title = {
                     Text(
                         "Sudoku - " + getDifficulty(difficulty),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = colors.onBackground
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = ""
+                            contentDescription = "",
+                            tint = colors.onBackground
                         )
                     }
                 }, actions = {
                     IconButton(onClick = { showDialog = true }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Help,
-                            contentDescription = ""
+                            contentDescription = "",
+                            tint = colors.onBackground
                         )
                     }
                 }
             )
         }
-
-
     ) { padding ->
         Column(
             modifier = Modifier
@@ -130,7 +130,9 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
             Text(
                 text = "Time: ${formatTime(state.timer)}",
                 fontSize = 16.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally))
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                color = colors.onBackground
+            )
             SudokuGrid(
                 board = state.board,
                 onCellSelected = viewModel::onCellSelected
@@ -143,7 +145,7 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
                 isNotesMode = state.isNotesMode,
                 onNotesClicked = viewModel::toggleNotesMode,
                 onClearClicked = viewModel::clearCell,
-                onHintsClicked =  viewModel::showHint,
+                onHintsClicked = viewModel::showHint,
                 onUndoClicked = viewModel::undo
             )
             ShowSolutionButton(
@@ -155,11 +157,16 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
         if (state.isComplete) {
             AlertDialog(
                 onDismissRequest = { /* Handle dismiss */ },
-                title = { Text("Congratulations!") },
-                text = { Text("You've completed the puzzle in ${formatTime(state.timer)}!") },
+                title = { Text("Congratulations!", color = colors.onBackground) },
+                text = {
+                    Text(
+                        "You've completed the puzzle in ${formatTime(state.timer)}!",
+                        color = colors.onBackground
+                    )
+                },
                 confirmButton = {
                     TextButton(onClick = { viewModel.startNewGame(Difficulty.MEDIUM) }) {
-                        Text("New Game")
+                        Text("New Game", color = colors.primary)
                     }
                 }
             )
@@ -168,52 +175,57 @@ fun GameScreen(viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
-                title = { Text("Icon Actions") },
+                title = { Text("Icon Actions", color = colors.onBackground) },
                 text = {
                     Column {
-                        Column {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.Undo,
-                                    contentDescription = "Undo",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.size(8.dp))
-                                Text("Undo: Reverses the last action.")
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.Delete,
-                                    contentDescription = "Clear",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.size(8.dp))
-                                Text("Clear: Removes all numbers entered.")
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.Edit,
-                                    contentDescription = "Notes",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.size(8.dp))
-                                Text("Notes: Allows you to enter numbers as notes in a cell.")
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.Lightbulb,
-                                    contentDescription = "Hints",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.size(8.dp))
-                                Text("Hints: Provides a helpful tip.")
-                            }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.Undo,
+                                contentDescription = "Undo",
+                                modifier = Modifier.size(24.dp),
+                                tint = colors.onBackground
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text("Undo: Reverses the last action.", color = colors.onBackground)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Clear",
+                                modifier = Modifier.size(24.dp),
+                                tint = colors.onBackground
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text("Clear: Clears a selected cell.", color = colors.onBackground)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "Notes",
+                                modifier = Modifier.size(24.dp),
+                                tint = colors.onBackground
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text(
+                                "Notes: Allows you to enter numbers as notes in a cell.",
+                                color = colors.onBackground
+                            )
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Lightbulb,
+                                contentDescription = "Hints",
+                                modifier = Modifier.size(24.dp),
+                                tint = colors.onBackground
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text("Hints: Provides a helpful tip.", color = colors.onBackground)
                         }
                     }
                 },
                 confirmButton = {
                     TextButton(onClick = { showDialog = false }) {
-                        Text("OK")
+                        Text("OK", color = colors.primary)
                     }
                 }
             )
@@ -231,6 +243,8 @@ fun SudokuGrid(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val gridHeight = screenHeight * 0.7f
+    val colors = MaterialTheme.colorScheme
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -252,7 +266,7 @@ fun SudokuGrid(
                     rowStart = rowStart,
                     colStart = colStart,
                     onCellSelected = onCellSelected,
-                    modifier = Modifier.border(2.dp, Color.Black)
+                    modifier = Modifier.border(2.dp, colors.onBackground)
                 )
             }
         }
@@ -291,15 +305,15 @@ fun SudokuCell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.colorScheme
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            //.border(1.dp, Color.Black)
             .clickable(onClick = onClick)
             .background(
                 when {
-                    cell.isSelected -> Color.Gray.copy(alpha = 0.3f)
-                    !cell.isValid -> Color.Red.copy(alpha = 0.1f)
+                    cell.isSelected -> colors.secondary.copy(alpha = 0.3f)
+                    !cell.isValid -> colors.error.copy(alpha = 0.3f)
                     else -> Color.Transparent
                 }
             ),
@@ -309,7 +323,7 @@ fun SudokuCell(
             Text(
                 text = cell.value.toString(),
                 fontSize = 24.sp,
-                color = if (cell.isOriginal) Color.Black else Color.Blue
+                color = if (cell.isOriginal) colors.onBackground else colors.primary
             )
         } else if (cell.notes.isNotEmpty()) {
             NotesGrid(notes = cell.notes)
@@ -320,6 +334,7 @@ fun SudokuCell(
 @Composable
 fun NotesGrid(notes: Set<Int>) {
     val limitedNotes = notes.take(6).toSet()
+    val colors = MaterialTheme.colorScheme
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -336,8 +351,7 @@ fun NotesGrid(notes: Set<Int>) {
                 Text(
                     text = number.toString(),
                     fontSize = 10.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
+                    color = colors.onSurface, textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -353,8 +367,7 @@ fun NotesGrid(notes: Set<Int>) {
                 Text(
                     text = number.toString(),
                     fontSize = 10.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
+                    color = colors.onSurface, textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -362,12 +375,16 @@ fun NotesGrid(notes: Set<Int>) {
     }
 }
 
+
 @Composable
 fun NumberPad(
     onNumberSelected: (Int) -> Unit,
     isNotesMode: Boolean,
     modifier: Modifier = Modifier
 ) {
+
+    val colors = MaterialTheme.colorScheme
+
     Column(modifier = modifier.fillMaxWidth()) {
         val numbers = (1..9).chunked(3)
         numbers.forEach { numberRow ->
@@ -383,7 +400,7 @@ fun NumberPad(
                         Text(
                             text = number.toString(),
                             fontSize = 30.sp,
-                            color = if (isNotesMode) Color.Blue else Color.Black
+                            color = if (isNotesMode) Color.Blue else colors.onBackground
                         )
                     }
                 }
@@ -401,6 +418,9 @@ fun Toolbar(
     onUndoClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val colors = MaterialTheme.colorScheme
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
@@ -418,7 +438,7 @@ fun Toolbar(
             Icon(
                 Icons.Default.Edit,
                 contentDescription = "Notes",
-                tint = if (isNotesMode) Color.Blue else Color.Black
+                tint = if (isNotesMode) Color.Blue else colors.onBackground
             )
         }
         IconButton(onClick = onHintsClicked) {
@@ -439,7 +459,7 @@ fun ShowSolutionButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = onSolutionClicked ,
+            onClick = onSolutionClicked,
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
             Text("Show Solution")
