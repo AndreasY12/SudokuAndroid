@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SudokuNew</string>
+    <string name="title_activity_start_screen">StartScreen</string>
+    <string name="title_activity_game_screen">GameScreen</string>
+    <string name="title_activity_rules_screen">RulesScreen</string>
+    <string name="title_activity_about_screen">AboutScreen</string>
+    <string name="title_activity_sudoku_app">SudokuApp</string>
 </resources>
