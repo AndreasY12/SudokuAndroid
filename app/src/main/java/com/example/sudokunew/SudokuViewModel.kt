@@ -235,7 +235,7 @@ class SudokuViewModel : ViewModel() {
 
             val newBoard = currentState.board.mapIndexed { r, rowCells ->
                 rowCells.mapIndexed { c, cell ->
-                    if (!cell.isOriginal && cell.value == 0 ) {
+                    if (!cell.isOriginal) {
                         val correctNumber = solutionBoard[r][c]
                         if (correctNumber != 0) {
                             cell.copy(value = correctNumber, notes = emptySet(), isValid = true, isOriginal = true)
