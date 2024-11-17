@@ -63,14 +63,17 @@ import java.util.Locale
 @Composable
 fun GameScreen(
     viewModel: SudokuViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    difficulty: Difficulty
 ) {
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
-    val difficulty = state.difficulty
+    //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
+
+    viewModel.startNewGame(difficulty)
 
     Scaffold(
         modifier = Modifier
@@ -165,7 +168,7 @@ fun GameScreen(
                     )
                 },
                 confirmButton = {
-                    TextButton(onClick = { viewModel.startNewGame(Difficulty.MEDIUM) }) {
+                    TextButton(onClick = { viewModel.startNewGame(difficulty) }) {
                         Text("New Game", color = colors.primary)
                     }
                 }

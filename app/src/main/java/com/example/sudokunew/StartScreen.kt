@@ -21,6 +21,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledTonalButton
@@ -53,11 +55,13 @@ import kotlinx.coroutines.delay
 fun StartScreen(
     isDarkMode: Boolean = true,
     navController: NavHostController,
+    onNewGameStart: (Difficulty) -> Unit
 ) {
 
     // States for staggered animation
     var showLogo by remember { mutableStateOf(false) }
     var showButtons by remember { mutableStateOf(false) }
+    var showDifficultyDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -109,7 +113,17 @@ fun StartScreen(
                 )
             ) {
                 ButtonGroup(
-                    navController = navController
+                    navController = navController,
+                    onNewGameClick = {showDifficultyDialog = true}
+                )
+            }
+            if (showDifficultyDialog) {
+                DifficultySelectionDialog(
+                    onDismiss = { showDifficultyDialog = false },
+                    onDifficultySelected = { difficulty ->
+                        onNewGameStart(difficulty)
+                        showDifficultyDialog = false
+                    }
                 )
             }
         }
@@ -162,7 +176,7 @@ fun Logo() {
 }
 
 @Composable
-fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) {
+fun ButtonGroup(modifier: Modifier = Modifier, navController: NavHostController,onNewGameClick: () -> Unit) {
     val buttonShape = RoundedCornerShape(12.dp)
     val buttonModifier = Modifier
         .fillMaxWidth()
@@ -177,7 +191,7 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ElevatedButton(
-            onClick = { navController.navigate("game") },
+            onClick = onNewGameClick,
             modifier = buttonModifier,
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -204,7 +218,7 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
         }
 
         TextButton(
-            onClick = {navController.navigate("rules")},
+            onClick = { navController.navigate("rules") },
             modifier = buttonModifier,
             colors = ButtonDefaults.textButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary
@@ -233,8 +247,8 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
 
         FilledTonalButton(
             onClick = {
-                if(context is Activity){
-                 context.finish()
+                if (context is Activity) {
+                    context.finish()
                 }
             },
             modifier = buttonModifier,
@@ -248,5 +262,57 @@ fun ButtonGroup(modifier: Modifier = Modifier,navController: NavHostController) 
                 style = MaterialTheme.typography.titleMedium
             )
         }
+    }
+}
+
+@Composable
+fun DifficultySelectionDialog(
+    onDismiss: () -> Unit,
+    onDifficultySelected: (Difficulty) -> Unit
+) {
+    val colors = MaterialTheme.colorScheme
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Select Difficulty",
+                color = colors.onBackground,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                DifficultyButton("Easy", Difficulty.EASY, onDifficultySelected)
+                DifficultyButton("Medium", Difficulty.MEDIUM, onDifficultySelected)
+                DifficultyButton("Hard", Difficulty.HARD, onDifficultySelected)
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = colors.primary)
+            }
+        }
+    )
+}
+
+@Composable
+fun DifficultyButton(
+    label: String,
+    difficulty: Difficulty,
+    onDifficultySelected: (Difficulty) -> Unit
+) {
+    val colors = MaterialTheme.colorScheme
+    Button(
+        onClick = { onDifficultySelected(difficulty) },
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colors.primary,
+            contentColor = colors.onPrimary
+        )
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }

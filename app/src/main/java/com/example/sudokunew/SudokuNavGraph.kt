@@ -16,11 +16,14 @@ fun SudokuNavHost(
         startDestination = "start",
         modifier = modifier
     ){
-        composable("start"){
-            StartScreen(navController = navController)
+        composable("start") {
+            StartScreen(navController = navController, onNewGameStart = { difficulty ->
+                navController.navigate("game/${difficulty.name}")
+            })
         }
-        composable("game") {
-            GameScreen(navController = navController)
+        composable("game/{difficulty}") { backStackEntry ->
+            val difficulty = Difficulty.valueOf(backStackEntry.arguments?.getString("difficulty") ?: "EASY")
+            GameScreen(navController = navController, difficulty = difficulty)
         }
         composable("rules"){
             RulesScreen(navController = navController)
