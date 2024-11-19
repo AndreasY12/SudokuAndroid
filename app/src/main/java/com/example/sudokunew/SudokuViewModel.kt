@@ -17,7 +17,7 @@ class SudokuViewModel : ViewModel() {
     val state: StateFlow<SudokuState> = _state.asStateFlow()
     private var solutionBoard = Array(9) { Array(9) { 0 } }
     private val history = Stack<SudokuState>()
-    //private val difficulty = Difficulty.MEDIUM
+    //private var difficulty = Difficulty.MEDIUM
     private var timerJob: Job? = null
 
     /*

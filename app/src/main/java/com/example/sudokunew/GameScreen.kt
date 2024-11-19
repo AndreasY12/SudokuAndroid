@@ -42,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,11 +70,18 @@ fun GameScreen(
     val state by viewModel.state.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
+    var gameStarted by rememberSaveable { mutableStateOf(false) }
     //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
 
-    viewModel.startNewGame(difficulty)
+    if(!gameStarted){
+        LaunchedEffect(Unit) {
+            viewModel.startNewGame(difficulty)
+            gameStarted = true
+        }
+    }
+    //viewModel.startNewGame(difficulty)
 
     Scaffold(
         modifier = Modifier
