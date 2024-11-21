@@ -250,7 +250,7 @@ class SudokuViewModel : ViewModel() {
                 board = newBoard,
             )
         }
-
+        timerJob?.cancel()
         //checkCompletion()
     }
 
