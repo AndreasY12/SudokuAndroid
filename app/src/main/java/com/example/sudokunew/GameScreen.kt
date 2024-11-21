@@ -58,7 +58,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import nl.dionsegijn.konfetti.compose.KonfettiView
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,6 +170,7 @@ fun GameScreen(
 
         // Show completion dialog if game is complete
         if (state.isComplete) {
+            ShowConfetti()
             AlertDialog(
                 onDismissRequest = { /* Handle dismiss */ },
                 title = { Text("Congratulations!", color = colors.onBackground) },
@@ -476,6 +481,18 @@ fun ShowSolutionButton(
             Text("Show Solution")
         }
     }
+}
+
+@Composable
+fun ShowConfetti() {
+    KonfettiView(
+        modifier = Modifier.fillMaxSize(),
+        parties = listOf(
+            Party(
+                emitter = Emitter(duration = 5, TimeUnit.SECONDS).perSecond(30)
+            )
+        )
+    )
 }
 
 private fun getDifficulty(difficulty: Difficulty): String {

@@ -41,6 +41,7 @@ android {
 
 dependencies {
 
+    implementation(libs.konfetti.compose) //Confetti Open Source Library - https://github.com/DanielMartinus/Konfetti
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
