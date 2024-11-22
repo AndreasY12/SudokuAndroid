@@ -72,14 +72,15 @@ fun GameScreen(
     difficulty: Difficulty
 ) {
     val state by viewModel.state.collectAsState()
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showHelpDialog by rememberSaveable { mutableStateOf(false) }
+    var showCompletedDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
     //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
 
-    if(!gameStarted){
+    if (!gameStarted) {
         LaunchedEffect(Unit) {
             viewModel.startNewGame(difficulty)
             gameStarted = true
@@ -124,7 +125,7 @@ fun GameScreen(
                         )
                     }
                 }, actions = {
-                    IconButton(onClick = { showDialog = true }) {
+                    IconButton(onClick = { showHelpDialog = true }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Help,
                             contentDescription = "",
@@ -168,11 +169,19 @@ fun GameScreen(
             )
         }
 
+        LaunchedEffect(state.isComplete) {
+            if (state.isComplete) {
+                showCompletedDialog = true
+            }
+        }
+
         // Show completion dialog if game is complete
         if (state.isComplete) {
             ShowConfetti()
+        }
+        if (showCompletedDialog) {
             AlertDialog(
-                onDismissRequest = { /* Handle dismiss */ },
+                onDismissRequest = { showCompletedDialog = false },
                 title = { Text("Congratulations!", color = colors.onBackground) },
                 text = {
                     Text(
@@ -181,74 +190,76 @@ fun GameScreen(
                     )
                 },
                 confirmButton = {
-                    TextButton(onClick = { viewModel.startNewGame(difficulty) }) {
+                    TextButton(onClick = {
+                        showCompletedDialog= false
+                        viewModel.startNewGame(difficulty)
+                    }) {
                         Text("New Game", color = colors.primary)
                     }
                 }
             )
         }
-        // Information dialog
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Icon Actions", color = colors.onBackground) },
-                text = {
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Undo,
-                                contentDescription = "Undo",
-                                modifier = Modifier.size(24.dp),
-                                tint = colors.onBackground
-                            )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text("Undo: Reverses the last action.", color = colors.onBackground)
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Clear",
-                                modifier = Modifier.size(24.dp),
-                                tint = colors.onBackground
-                            )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text("Clear: Clears a selected cell.", color = colors.onBackground)
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.Edit,
-                                contentDescription = "Notes",
-                                modifier = Modifier.size(24.dp),
-                                tint = colors.onBackground
-                            )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text(
-                                "Notes: Allows you to enter numbers as notes in a cell.",
-                                color = colors.onBackground
-                            )
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.Lightbulb,
-                                contentDescription = "Hints",
-                                modifier = Modifier.size(24.dp),
-                                tint = colors.onBackground
-                            )
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text("Hints: Provides a helpful tip.", color = colors.onBackground)
-                        }
+    }
+    // Information dialog
+    if (showHelpDialog) {
+        AlertDialog(
+            onDismissRequest = { showHelpDialog = false },
+            title = { Text("Icon Actions", color = colors.onBackground) },
+            text = {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.Undo,
+                            contentDescription = "Undo",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text("Undo: Reverses the last action.", color = colors.onBackground)
                     }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showDialog = false }) {
-                        Text("OK", color = colors.primary)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Clear",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text("Clear: Clears a selected cell.", color = colors.onBackground)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = "Notes",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            "Notes: Allows you to enter numbers as notes in a cell.",
+                            color = colors.onBackground
+                        )
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Lightbulb,
+                            contentDescription = "Hints",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text("Hints: Provides a helpful tip.", color = colors.onBackground)
                     }
                 }
-            )
-        }
+            },
+            confirmButton = {
+                TextButton(onClick = { showHelpDialog = false }) {
+                    Text("OK", color = colors.primary)
+                }
+            }
+        )
     }
 }
-
 
 @Composable
 fun SudokuGrid(
