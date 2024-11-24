@@ -1,5 +1,9 @@
 package com.example.sudokunew
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,8 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -36,6 +45,7 @@ fun RulesScreen(
     navController: NavHostController
 ) {
     val layoutDirection = LocalLayoutDirection.current
+    val isDarkTheme = isSystemInDarkTheme()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -66,6 +76,7 @@ fun RulesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -78,42 +89,94 @@ fun RulesScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Rules List
-            RuleRow(
-                ruleText = "1) Fill in all cells with numbers from 1 to 9"
-            )
-            RuleRow(
-                ruleText = "2) No repeating numbers in the same row"
-            )
-            RuleRow(
-                ruleText = "3) No repeating numbers in the same column"
-            )
-            RuleRow(
-                ruleText = "4) No repeating numbers in any 3x3 subgrid"
-            )
+            if (isDarkTheme) {
+                // Rules List
+                RuleRow(
+                    ruleText = "1) Fill in all cells with numbers from 1 to 9"
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                RuleRow(
+                    ruleText = "2) No repeating numbers in the same row",
+                    image = R.drawable.row_dark,
+                    imageSize = 256.dp
+                )
+                RuleRow(
+                    ruleText = "3) No repeating numbers in the same column",
+                    image = R.drawable.column_dark,
+                    imageSize = 256.dp
+                )
+                RuleRow(
+                    ruleText = "4) No repeating numbers in any 3x3 subgrid",
+                    image = R.drawable.box_dark,
+                    imageSize = 128.dp
+                )
+            } else {
+                // Rules List
+                RuleRow(
+                    ruleText = "1) Fill in all cells with numbers from 1 to 9"
+                )
 
-
+                RuleRow(
+                    ruleText = "2) No repeating numbers in the same row",
+                    image = R.drawable.row_light,
+                    imageSize = 256.dp
+                )
+                RuleRow(
+                    ruleText = "3) No repeating numbers in the same column",
+                    image = R.drawable.column_light,
+                    imageSize = 256.dp
+                )
+                RuleRow(
+                    ruleText = "4) No repeating numbers in any 3x3 subgrid",
+                    image = R.drawable.box_light,
+                    imageSize = 128.dp
+                )
+            }
+            //Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
 
 @Composable
-fun RuleRow(ruleText: String) {
+fun RuleRow(
+    ruleText: String,
+    @DrawableRes image: Int? = null,
+    imageSize: Dp = 48.dp,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
 
-        Text(
-            text = ruleText,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal
+            Text(
+                text = ruleText,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    //color = MaterialTheme.colors.onBackground
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
-        )
+
+
+            image?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(imageSize)
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 8.dp)
+                )
+            }
+        }
     }
 }
