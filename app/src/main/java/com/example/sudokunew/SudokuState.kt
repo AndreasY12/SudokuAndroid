@@ -1,11 +1,14 @@
 package com.example.sudokunew
 
+import kotlinx.serialization.Serializable
+
 enum class Difficulty(val cellsToRemove:Int) {
     EASY(30),
     MEDIUM(40),
     HARD(50)
 }
 
+@Serializable
 data class SudokuCell(
     val value: Int = 0,
     val isOriginal: Boolean = false,
@@ -14,6 +17,7 @@ data class SudokuCell(
     val isValid: Boolean = true
 )
 
+@Serializable
 data class SudokuState(
     val board: List<List<SudokuCell>> = List(9) { List(9) { SudokuCell() } },
     val selectedCell: Pair<Int, Int>? = null,

@@ -5,14 +5,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import toEntity
 import java.util.Stack
 
-class SudokuViewModel : ViewModel() {
+class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
     private val _state = MutableStateFlow(SudokuState())
     val state: StateFlow<SudokuState> = _state.asStateFlow()
     private var solutionBoard = Array(9) { Array(9) { 0 } }
@@ -25,6 +27,24 @@ class SudokuViewModel : ViewModel() {
         startNewGame(difficulty)
     }
      */
+
+    fun getSavedGames(): Flow<List<SudokuGameEntity>> {
+        return database.sudokuGameDao().getAllGames()
+    }
+
+    fun saveCurrentGame() {
+        viewModelScope.launch {
+            val currentState = _state.value
+            val gameEntity = currentState.toEntity()
+            database.sudokuGameDao().insertGame(gameEntity)
+        }
+    }
+
+    fun deleteSavedGame(game: SudokuGameEntity) {
+        viewModelScope.launch {
+            database.sudokuGameDao().deleteGame(game)
+        }
+    }
 
     fun startNewGame(difficulty: Difficulty) {
         //originalBoard : complete and solved Sudoku puzzle

@@ -5,4 +5,5 @@
     <string name="title_activity_rules_screen">RulesScreen</string>
     <string name="title_activity_about_screen">AboutScreen</string>
     <string name="title_activity_sudoku_app">SudokuApp</string>
+    <string name="title_activity_load_game_screen">LoadGameScreen</string>
 </resources>
