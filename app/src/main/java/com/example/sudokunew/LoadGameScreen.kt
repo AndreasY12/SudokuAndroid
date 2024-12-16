@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +24,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -49,6 +54,8 @@ fun LoadGameScreen(
     )
 ) {
     val savedGames by viewModel.getSavedGames().collectAsState(initial = emptyList())
+    var showDialog by remember { mutableStateOf(false) }
+    var gameToDelete by remember { mutableStateOf<SudokuGameEntity?>(null) }
 
     Scaffold(
         topBar = {
@@ -98,7 +105,8 @@ fun LoadGameScreen(
                             game = game,
                             onLoadGame = { onGameSelected(game.id) },
                             onDeleteGame = {
-                                viewModel.deleteSavedGame(game)
+                                gameToDelete = game
+                                showDialog = true
                             }
                         )
                     }
@@ -106,6 +114,40 @@ fun LoadGameScreen(
             }
         }
     }
+
+    if (showDialog && gameToDelete != null) {
+        ConfirmationDialog(
+            onConfirm = {
+                viewModel.deleteSavedGame(gameToDelete!!)
+                showDialog = false
+            },
+            onDismiss = { showDialog = false }
+        )
+    }
+}
+
+@Composable
+fun ConfirmationDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Delete Game") },
+        text = {
+            Text("Are you sure you want to delete this game?")
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Yes")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("No")
+            }
+        }
+    )
 }
 
 @Composable
@@ -145,7 +187,6 @@ private fun SavedGameItem(
             IconButton(onClick = onDeleteGame) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    //Make the icon red
                     tint = MaterialTheme.colorScheme.error,
                     contentDescription = "Delete game"
                 )
