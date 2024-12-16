@@ -124,7 +124,7 @@ fun GameScreen(
                 ),
                 title = {
                     Text(
-                        "Sudoku - " + getDifficulty(difficulty),
+                        "Sudoku - " + getDifficulty(state.difficulty),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = colors.onBackground
