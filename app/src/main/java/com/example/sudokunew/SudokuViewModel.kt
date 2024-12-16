@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import toEntity
+import toState
 import java.util.Stack
 
 class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
@@ -19,8 +20,14 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
     val state: StateFlow<SudokuState> = _state.asStateFlow()
     private var solutionBoard = Array(9) { Array(9) { 0 } }
     private val history = Stack<SudokuState>()
+
     //private var difficulty = Difficulty.MEDIUM
     private var timerJob: Job? = null
+    private var gameId: Long? = null
+
+    fun setGameId(gameId: Long) {
+        this.gameId = gameId
+    }
 
     /*
     init {
@@ -28,17 +35,29 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
     }
      */
 
+    fun loadGame(gameId: Long) {
+        viewModelScope.launch {
+            database.sudokuGameDao().getGameById(gameId)?.let { gameEntity ->
+                _state.value = gameEntity.toState()
+                startTimer()
+                history.clear()
+                fillBoard(solutionBoard)
+            }
+        }
+    }
+
     fun getSavedGames(): Flow<List<SudokuGameEntity>> {
         return database.sudokuGameDao().getAllGames()
     }
 
-    fun saveCurrentGame() {
+    fun saveGame() {
+        val game = _state.value.toEntity(gameId)
         viewModelScope.launch {
-            val currentState = _state.value
-            val gameEntity = currentState.toEntity()
-            database.sudokuGameDao().insertGame(gameEntity)
+            database.sudokuGameDao().upsertGame(game)
+            //Log.d("SudokuViewModel", "Game saved with id: $id")
         }
     }
+
 
     fun deleteSavedGame(game: SudokuGameEntity) {
         viewModelScope.launch {
@@ -66,11 +85,10 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
             }
         }
 
-        _state.value = SudokuState(board = initialBoard,difficulty = difficulty)
+        _state.value = SudokuState(board = initialBoard, difficulty = difficulty)
         history.clear()
         startTimer()
     }
-
 
 
     private fun fillBoard(board: Array<Array<Int>>): Boolean {
@@ -190,7 +208,9 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
     ): SudokuState {
         if (currentState.board[row][col].isOriginal) return currentState
 
-        val isValid = isValid(currentState.board.map { it.map { cell -> cell.value }.toTypedArray() }.toTypedArray(), row, col, number)
+        val isValid =
+            isValid(currentState.board.map { it.map { cell -> cell.value }.toTypedArray() }
+                .toTypedArray(), row, col, number)
         return currentState.copy(
             board = currentState.board.mapIndexed { r, rowCells ->
                 rowCells.mapIndexed { c, cell ->
@@ -231,7 +251,12 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
                         val correctNumber = solutionBoard[r][c]
                         if (correctNumber != 0) {
                             hintApplied = true
-                            cell.copy(value = correctNumber, notes = emptySet(), isValid = true, isOriginal = true)
+                            cell.copy(
+                                value = correctNumber,
+                                notes = emptySet(),
+                                isValid = true,
+                                isOriginal = true
+                            )
                         } else cell
                     } else cell
                 }
@@ -260,7 +285,12 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
                     if (!cell.isOriginal) {
                         val correctNumber = solutionBoard[r][c]
                         if (correctNumber != 0) {
-                            cell.copy(value = correctNumber, notes = emptySet(), isValid = true, isOriginal = true)
+                            cell.copy(
+                                value = correctNumber,
+                                notes = emptySet(),
+                                isValid = true,
+                                isOriginal = true
+                            )
                         } else cell
                     } else cell
                 }
@@ -279,7 +309,7 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         if (_state.value.board[row][col].isOriginal) return
 
         _state.update { currentState ->
-           val newState= currentState.copy(
+            val newState = currentState.copy(
                 board = currentState.board.mapIndexed { r, rowCells ->
                     rowCells.mapIndexed { c, cell ->
                         if (r == row && c == col) {
@@ -293,15 +323,19 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         }
     }
 
-    fun undo(){
+    fun undo() {
         if (history.isNotEmpty()) {
             _state.value = history.pop()
         }
     }
 
-    private fun startTimer(){
-        timerJob?.cancel()
-        _state.update { it.copy(timer = 0L) } // Reset timer
+    private fun startTimer() {
+
+        if (gameId == null) {
+            timerJob?.cancel()
+            _state.update { it.copy(timer = 0L) } // Reset timer
+        }
+
 
         timerJob = viewModelScope.launch(Dispatchers.Main) {
             while (!_state.value.isComplete) {
@@ -312,5 +346,8 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
             }
         }
 
+
     }
+
+
 }

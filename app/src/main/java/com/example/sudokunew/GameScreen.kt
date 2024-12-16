@@ -75,7 +75,8 @@ fun GameScreen(
         )
     ),
     navController: NavHostController,
-    difficulty: Difficulty
+    difficulty: Difficulty,
+    gameId:Long? = null
 ) {
     val state by viewModel.state.collectAsState()
     var showHelpDialog by rememberSaveable { mutableStateOf(false) }
@@ -86,9 +87,16 @@ fun GameScreen(
 
     val colors = MaterialTheme.colorScheme
 
-    if (!gameStarted) {
-        LaunchedEffect(Unit) {
-            viewModel.startNewGame(difficulty)
+    LaunchedEffect(Unit) {
+        if (!gameStarted) {
+            if (gameId != null) {
+                // Load saved game
+                viewModel.setGameId(gameId)
+                viewModel.loadGame(gameId)
+            } else {
+                // Start new game
+                viewModel.startNewGame(difficulty)
+            }
             gameStarted = true
         }
     }
@@ -124,7 +132,7 @@ fun GameScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        viewModel.saveCurrentGame()
+                        viewModel.saveGame()
                         navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,

@@ -2,9 +2,8 @@ package com.example.sudokunew
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,11 +14,11 @@ interface SudokuGameDao {
     @Query("SELECT * FROM sudoku_games WHERE id = :gameId")
     suspend fun getGameById(gameId: Long): SudokuGameEntity?
 
-    @Insert
-    suspend fun insertGame(game: SudokuGameEntity): Long
+    //@Insert(onConflict = OnConflictStrategy.REPLACE)
+    //suspend fun insertOrUpdateGame(game: SudokuGameEntity): Long
 
-    @Update
-    suspend fun updateGame(game: SudokuGameEntity)
+    @Upsert
+    suspend fun upsertGame(game: SudokuGameEntity): Long
 
     @Delete
     suspend fun deleteGame(game: SudokuGameEntity)

@@ -205,7 +205,9 @@ fun ButtonGroup(modifier: Modifier = Modifier, navController: NavHostController,
         }
 
         OutlinedButton(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate("load")
+            },
             modifier = buttonModifier,
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary

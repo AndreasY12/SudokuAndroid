@@ -9,14 +9,17 @@ import com.example.sudokunew.SudokuState
  * Converts a SudokuState (domain model) to a SudokuGameEntity (database entity)
  * Used when saving game state to the database
  */
-fun SudokuState.toEntity() = SudokuGameEntity(
-    board = board,
-    selectedCell = selectedCell,
-    difficulty = difficulty,
-    isNotesMode = isNotesMode,
-    isComplete = isComplete,
-    timer = timer
-)
+fun SudokuState.toEntity(gameId: Long? = null): SudokuGameEntity {
+    return SudokuGameEntity(
+        id = gameId ?: 0, // Use existing ID if available, otherwise use 0 for new games
+        board = board,
+        selectedCell = selectedCell,
+        difficulty = difficulty,
+        isNotesMode = isNotesMode,
+        isComplete = isComplete,
+        timer = timer
+    )
+}
 
 /**
  * Converts a SudokuGameEntity (database entity) to a SudokuState (domain model)
