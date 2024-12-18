@@ -1,5 +1,6 @@
 package com.example.sudokunew
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -100,6 +101,12 @@ fun GameScreen(
             gameStarted = true
         }
     }
+
+    BackHandler {
+        viewModel.saveGame()
+        navController.navigateUp()
+    }
+
     //viewModel.startNewGame(difficulty)
 
     Scaffold(
