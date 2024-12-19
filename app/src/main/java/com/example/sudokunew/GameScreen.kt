@@ -84,11 +84,13 @@ fun GameScreen(
     var showCompletedDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
+    val soundPlayer = SoundPlayer(LocalContext.current)
     //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
+        soundPlayer.release()
         if (!gameStarted) {
             if (gameId != null) {
                 // Load saved game
@@ -201,6 +203,7 @@ fun GameScreen(
         // Show completion dialog if game is complete
         if (state.isComplete) {
             ShowConfetti()
+            soundPlayer.playSound(R.raw.win_effect)
         }
         if (showCompletedDialog) {
             AlertDialog(
