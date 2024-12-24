@@ -197,13 +197,13 @@ fun GameScreen(
         LaunchedEffect(state.isComplete) {
             if (state.isComplete) {
                 showCompletedDialog = true
+                soundPlayer.playSound(R.raw.win_effect)
             }
         }
 
         // Show completion dialog if game is complete
         if (state.isComplete) {
             ShowConfetti()
-            soundPlayer.playSound(R.raw.win_effect)
         }
         if (showCompletedDialog) {
             AlertDialog(
