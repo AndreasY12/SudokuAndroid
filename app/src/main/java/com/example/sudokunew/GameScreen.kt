@@ -1,5 +1,9 @@
 package com.example.sudokunew
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,10 +47,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -66,7 +72,6 @@ import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
@@ -80,14 +85,49 @@ fun GameScreen(
     gameId:Long? = null
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
     var showHelpDialog by rememberSaveable { mutableStateOf(false) }
     var showCompletedDialog by rememberSaveable { mutableStateOf(false) }
+    var showSolutionConfirmDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
+
+    val shakeDetector = remember {
+        ShakeDetector {
+            Log.d("GameScreen", "Shake detected, showing dialog")
+            showSolutionConfirmDialog = true
+        }
+    }
+
+    DisposableEffect(context) {
+        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+        if (accelerometer == null) {
+            Log.e("GameScreen", "No accelerometer sensor found on device")
+        } else {
+            val registered = sensorManager.registerListener(
+                shakeDetector,
+                accelerometer,
+                SensorManager.SENSOR_DELAY_GAME // Use SENSOR_DELAY_GAME for better responsiveness
+            )
+
+            if (!registered) {
+                Log.e("GameScreen", "Failed to register sensor listener")
+            } else {
+                Log.d("GameScreen", "Successfully registered shake detector")
+            }
+        }
+
+        onDispose {
+            Log.d("GameScreen", "Unregistering shake detector")
+            sensorManager.unregisterListener(shakeDetector)
+        }
+    }
 
     LaunchedEffect(Unit) {
         soundPlayer.release()
@@ -107,6 +147,44 @@ fun GameScreen(
     BackHandler {
         viewModel.saveGame()
         navController.navigateUp()
+    }
+
+    if (showSolutionConfirmDialog) {
+        Log.d("GameScreen", "Showing shake confirmation dialog")
+        AlertDialog(
+            onDismissRequest = {
+                Log.d("GameScreen", "Dialog dismissed")
+                showSolutionConfirmDialog = false
+            },
+            title = { Text("Show Solution?", color = colors.onBackground) },
+            text = {
+                Text(
+                    "Are you sure you want to see the solution? This will end your current game.",
+                    color = colors.onBackground
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        Log.d("GameScreen", "Showing solution")
+                        showSolutionConfirmDialog = false
+                        viewModel.showSolution()
+                    }
+                ) {
+                    Text("Show Solution", color = colors.primary)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        Log.d("GameScreen", "Dialog cancelled")
+                        showSolutionConfirmDialog = false
+                    }
+                ) {
+                    Text("Cancel", color = colors.primary)
+                }
+            }
+        )
     }
 
     //viewModel.startNewGame(difficulty)
@@ -190,7 +268,7 @@ fun GameScreen(
                 onUndoClicked = viewModel::undo
             )
             ShowSolutionButton(
-                onSolutionClicked = viewModel::showSolution
+                onSolutionClicked = { showSolutionConfirmDialog = true }
             )
         }
 
