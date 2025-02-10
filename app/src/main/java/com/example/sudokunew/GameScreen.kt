@@ -573,7 +573,7 @@ fun Toolbar(
             )
         }
         IconButton(onClick = onHintsClicked) {
-            Icon(Icons.Default.Lightbulb, contentDescription = "Clear")
+            Icon(Icons.Default.Lightbulb, contentDescription = "Hints")
         }
     }
 }
