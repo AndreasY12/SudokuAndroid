@@ -244,8 +244,33 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
 
         _state.update { currentState ->
             var hintApplied = false
+            val emptyCells = mutableListOf<Pair<Int,Int>>()
 
+            currentState.board.forEachIndexed { r, rowCells ->
+                rowCells.forEachIndexed { c, cell ->
+                    if (!cell.isOriginal && cell.value == 0 && solutionBoard[r][c] != 0) {
+                        emptyCells.add(Pair(r, c))
+                    }
+                }
+            }
+
+            val (row, col) = emptyCells.random()
             val newBoard = currentState.board.mapIndexed { r, rowCells ->
+                rowCells.mapIndexed { c, cell ->
+                    if (r == row && c == col) {
+                        hintApplied = true
+                        cell.copy(
+                            value = solutionBoard[r][c],
+                            notes = emptySet(),
+                            isValid = true,
+                            isOriginal = true
+                        )
+                    } else cell
+                }
+            }
+
+
+            /*val newBoard = currentState.board.mapIndexed { r, rowCells ->
                 rowCells.mapIndexed { c, cell ->
                     if (!cell.isOriginal && cell.value == 0 && !hintApplied) {
                         val correctNumber = solutionBoard[r][c]
@@ -260,7 +285,7 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
                         } else cell
                     } else cell
                 }
-            }
+            }*/
 
             if (!hintApplied) {
                 history.push(currentState.copy(isNotesMode = false))
