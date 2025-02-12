@@ -17,6 +17,9 @@ interface SudokuGameDao {
     //@Insert(onConflict = OnConflictStrategy.REPLACE)
     //suspend fun insertOrUpdateGame(game: SudokuGameEntity): Long
 
+    @Query("DELETE FROM sudoku_games")
+    suspend fun deleteAllGames()
+
     @Upsert
     suspend fun upsertGame(game: SudokuGameEntity): Long
 

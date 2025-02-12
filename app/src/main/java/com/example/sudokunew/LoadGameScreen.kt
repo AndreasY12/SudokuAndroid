@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +57,27 @@ fun LoadGameScreen(
     val savedGames by viewModel.getSavedGames().collectAsState(initial = emptyList())
     var showDialog by remember { mutableStateOf(false) }
     var gameToDelete by remember { mutableStateOf<SudokuGameEntity?>(null) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
+    if(showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Delete all games") },
+            text = {
+                Text("Are you sure you want to delete all the saved games?\nThis action cannot be undone!")
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.deleteAllSavedGames(); showConfirmDialog = false }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("No")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -71,6 +93,15 @@ fun LoadGameScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    if (savedGames.isNotEmpty()) {
+                        FilledTonalButton(
+                            onClick = { showConfirmDialog = true },
+                            content = { Text("Delete All") },
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
                 }
@@ -194,6 +225,8 @@ private fun SavedGameItem(
         }
     }
 }
+
+
 
 private fun formatDate(timestamp: Long): String {
     return SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())

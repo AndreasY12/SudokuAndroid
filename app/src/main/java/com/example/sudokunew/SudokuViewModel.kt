@@ -349,5 +349,11 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
 
     }
 
+    fun deleteAllSavedGames() {
+        viewModelScope.launch {
+            database.sudokuGameDao().deleteAllGames()
+        }
+    }
+
 
 }
