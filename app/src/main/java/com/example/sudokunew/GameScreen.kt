@@ -35,6 +35,7 @@ import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -72,6 +73,7 @@ import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
@@ -82,11 +84,12 @@ fun GameScreen(
     ),
     navController: NavHostController,
     difficulty: Difficulty,
-    gameId:Long? = null
+    gameId: Long? = null
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var showHelpDialog by rememberSaveable { mutableStateOf(false) }
+    var showSaveDialog by rememberSaveable { mutableStateOf(false) }
     var showCompletedDialog by rememberSaveable { mutableStateOf(false) }
     var showSolutionConfirmDialog by rememberSaveable { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
@@ -144,9 +147,55 @@ fun GameScreen(
         }
     }
 
-    BackHandler {
+    /*BackHandler {
         viewModel.saveGame()
-        navController.navigateUp()
+        navController.navigate("start?gameJustSaved=true") {
+            popUpTo("start") { inclusive = true }
+        }
+    }*/
+
+    BackHandler {
+        showSaveDialog = true
+    }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { showSaveDialog = false },
+            title = { Text("Save Game?", color = colors.onBackground) },
+            text = {
+                Text(
+                    "Do you want to save the current game?",
+                    color = colors.onBackground
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        Log.d("GameScreen", "Saving game")
+                        viewModel.saveGame()
+                        showSaveDialog = false
+                        navController.navigate("start?gameJustSaved=true") {
+                            popUpTo("start") { inclusive = true }
+                        }
+                    }
+                ) {
+                    Text("Save", color = colors.primary)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        Log.d("GameScreen", "Not saving game")
+                        showSaveDialog = false
+                        navController.navigate("start?gameJustSaved=false") {
+                            popUpTo("start") { inclusive = true }
+                        }
+                    }
+                ) {
+                    Text("Don't Save", color = colors.primary)
+                }
+            }
+        )
     }
 
     if (showSolutionConfirmDialog) {
@@ -219,8 +268,12 @@ fun GameScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        viewModel.saveGame()
-                        navController.navigateUp() }) {
+                        /*viewModel.saveGame()
+                        navController.navigate("start?gameJustSaved=true") {
+                            popUpTo("start") { inclusive = true }
+                        }*/
+                        showSaveDialog = true
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "",
@@ -295,7 +348,7 @@ fun GameScreen(
                 },
                 confirmButton = {
                     TextButton(onClick = {
-                        showCompletedDialog= false
+                        showCompletedDialog = false
                         viewModel.startNewGame(difficulty)
                     }) {
                         Text("New Game", color = colors.primary)
@@ -353,6 +406,16 @@ fun GameScreen(
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         Text("Hints: Provides a helpful tip.", color = colors.onBackground)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Vibration,
+                            contentDescription = "Shake Phone",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.onBackground
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text("Shake the phone to show the solution!", color = colors.onBackground)
                     }
                 }
             },

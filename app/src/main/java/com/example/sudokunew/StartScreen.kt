@@ -1,5 +1,6 @@
 package com.example.sudokunew
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -29,6 +30,10 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -51,10 +56,12 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun StartScreen(
     isDarkMode: Boolean = true,
     navController: NavHostController,
+    gameJustSaved: Boolean = false,
     onNewGameStart: (Difficulty) -> Unit
 ) {
 
@@ -62,6 +69,16 @@ fun StartScreen(
     var showLogo by remember { mutableStateOf(false) }
     var showButtons by remember { mutableStateOf(false) }
     var showDifficultyDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(gameJustSaved) {
+        if (gameJustSaved) {
+            snackbarHostState.showSnackbar(
+                message = "Game saved successfully!",
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -70,61 +87,65 @@ fun StartScreen(
         showButtons = true
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
-
-            ThemeSwitcher(
-                isDarkMode = isDarkMode,
-                onThemeChange = {
-                    // TODO: Handle theme change
-                }
-            )
-
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            AnimatedVisibility(
-                visible = showLogo,
-                enter = fadeIn() + slideInVertically(
-                    initialOffsetY = { -50 },
-                    animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Logo()
-            }
 
-            Spacer(modifier = Modifier.height(48.dp))
-
-            AnimatedVisibility(
-                visible = showButtons,
-                enter = fadeIn() + slideInVertically(
-                    initialOffsetY = { 50 },
-                    animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
-                )
-            ) {
-                ButtonGroup(
-                    navController = navController,
-                    onNewGameClick = {showDifficultyDialog = true}
-                )
-            }
-            if (showDifficultyDialog) {
-                DifficultySelectionDialog(
-                    onDismiss = { showDifficultyDialog = false },
-                    onDifficultySelected = { difficulty ->
-                        onNewGameStart(difficulty)
-                        showDifficultyDialog = false
+                ThemeSwitcher(
+                    isDarkMode = isDarkMode,
+                    onThemeChange = {
+                        // TODO: Handle theme change
                     }
                 )
+
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                AnimatedVisibility(
+                    visible = showLogo,
+                    enter = fadeIn() + slideInVertically(
+                        initialOffsetY = { -50 },
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+                    )
+                ) {
+                    Logo()
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                AnimatedVisibility(
+                    visible = showButtons,
+                    enter = fadeIn() + slideInVertically(
+                        initialOffsetY = { 50 },
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+                    )
+                ) {
+                    ButtonGroup(
+                        navController = navController,
+                        onNewGameClick = { showDifficultyDialog = true }
+                    )
+                }
+                if (showDifficultyDialog) {
+                    DifficultySelectionDialog(
+                        onDismiss = { showDifficultyDialog = false },
+                        onDifficultySelected = { difficulty ->
+                            onNewGameStart(difficulty)
+                            showDifficultyDialog = false
+                        }
+                    )
+                }
             }
         }
     }
@@ -176,7 +197,11 @@ fun Logo() {
 }
 
 @Composable
-fun ButtonGroup(modifier: Modifier = Modifier, navController: NavHostController,onNewGameClick: () -> Unit) {
+fun ButtonGroup(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    onNewGameClick: () -> Unit
+) {
     val buttonShape = RoundedCornerShape(12.dp)
     val buttonModifier = Modifier
         .fillMaxWidth()

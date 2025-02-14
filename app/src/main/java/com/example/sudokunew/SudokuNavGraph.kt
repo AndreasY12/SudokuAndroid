@@ -18,12 +18,22 @@ fun SudokuNavHost(
         startDestination = "start",
         modifier = modifier
     ) {
-        composable("start") {
+        composable(
+            route = "start?gameJustSaved={gameJustSaved}",
+            arguments = listOf(
+                navArgument("gameJustSaved") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
+            val gameJustSaved = backStackEntry.arguments?.getBoolean("gameJustSaved") ?: false
             StartScreen(
                 navController = navController,
                 onNewGameStart = { difficulty ->
                     navController.navigate("game/new/${difficulty.name}")
-                }
+                },
+                gameJustSaved = gameJustSaved
             )
         }
 
