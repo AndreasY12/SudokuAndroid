@@ -9,25 +9,19 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -35,8 +29,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -59,7 +51,6 @@ import kotlinx.coroutines.delay
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun StartScreen(
-    isDarkMode: Boolean = true,
     navController: NavHostController,
     gameJustSaved: Boolean = false,
     onNewGameStart: (Difficulty) -> Unit
@@ -103,13 +94,6 @@ fun StartScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                ThemeSwitcher(
-                    isDarkMode = isDarkMode,
-                    onThemeChange = {
-                        // TODO: Handle theme change
-                    }
-                )
-
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -151,37 +135,6 @@ fun StartScreen(
     }
 }
 
-
-@Composable
-fun ThemeSwitcher(
-    isDarkMode: Boolean,
-    onThemeChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = if (isDarkMode) "Dark Mode" else "Light Mode",
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(end = 8.dp)
-        )
-        Switch(
-            checked = isDarkMode,
-            onCheckedChange = onThemeChange,
-            thumbContent = {
-                Icon(
-                    imageVector = if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode,
-                    contentDescription = if (isDarkMode) "Dark Mode" else "Light Mode",
-                    modifier = Modifier.size(SwitchDefaults.IconSize)
-                )
-            }
-        )
-    }
-}
 
 @Composable
 fun Logo() {
