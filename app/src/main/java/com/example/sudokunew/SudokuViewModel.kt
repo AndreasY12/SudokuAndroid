@@ -300,26 +300,38 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         }
     }
 
+    /**
+     * Reveals a hint by filling in a random empty cell with its correct value.
+     * The hint is only shown if the puzzle is not complete.
+     * The revealed cell is marked as original to prevent modification.
+     */
     fun showHint() {
+        // Don't show hints if the puzzle is already complete
         if (_state.value.isComplete) return
 
         _state.update { currentState ->
-            var hintApplied = false
-            val emptyCells = mutableListOf<Pair<Int,Int>>()
-
-            currentState.board.forEachIndexed { r, rowCells ->
-                rowCells.forEachIndexed { c, cell ->
-                    if (!cell.isOriginal && cell.value == 0 && solutionBoard[r][c] != 0) {
-                        emptyCells.add(Pair(r, c))
-                    }
+            // Find all empty non-original cells that have a solution
+            val emptyCells = currentState.board.flatMapIndexed { row, rowCells ->
+                rowCells.mapIndexedNotNull { col, cell ->
+                    if (!cell.isOriginal && cell.value == 0 && solutionBoard[row][col] != 0) {
+                        Pair(row, col)
+                    } else null
                 }
             }
 
+            // If no valid cells for hints are found, return the current state
+            if (emptyCells.isEmpty()) {
+                return@update currentState
+            }
+
+            // Save the current state to history before applying the hint
+            history.push(currentState.copy(isNotesMode = false))
+
+            // Select a random empty cell and reveal its correct value
             val (row, col) = emptyCells.random()
             val newBoard = currentState.board.mapIndexed { r, rowCells ->
                 rowCells.mapIndexed { c, cell ->
                     if (r == row && c == col) {
-                        hintApplied = true
                         cell.copy(
                             value = solutionBoard[r][c],
                             notes = emptySet(),
@@ -330,36 +342,11 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
                 }
             }
 
-
-            /*val newBoard = currentState.board.mapIndexed { r, rowCells ->
-                rowCells.mapIndexed { c, cell ->
-                    if (!cell.isOriginal && cell.value == 0 && !hintApplied) {
-                        val correctNumber = solutionBoard[r][c]
-                        if (correctNumber != 0) {
-                            hintApplied = true
-                            cell.copy(
-                                value = correctNumber,
-                                notes = emptySet(),
-                                isValid = true,
-                                isOriginal = true
-                            )
-                        } else cell
-                    } else cell
-                }
-            }*/
-
-            if (!hintApplied) {
-                history.push(currentState.copy(isNotesMode = false))
-                currentState
-            } else {
-                history.push(currentState.copy(isNotesMode = false))
-                currentState.copy(
-                    board = newBoard,
-                )
-            }
-
+            // Return the new state with the updated board
+            currentState.copy(board = newBoard)
         }
 
+        // Check if the puzzle is now complete after applying the hint
         checkCompletion()
     }
 
