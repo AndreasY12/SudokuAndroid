@@ -85,7 +85,7 @@ fun LoadGameScreen(
                 title = {
                     Text(
                         text = "Saved Games",
-                        style = MaterialTheme.typography.headlineMedium
+                        style = MaterialTheme.typography.headlineSmall
                     )
                 },
                 navigationIcon = {
