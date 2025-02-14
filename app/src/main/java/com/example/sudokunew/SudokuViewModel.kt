@@ -112,16 +112,77 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         return true //Board filled
     }
 
-    private fun removeNumbers(board: Array<Array<Int>>, cellsToRemove: Int) {
-        var count = 0
-        while (count < cellsToRemove) {
-            val row = (0 until 9).random()
-            val col = (0 until 9).random()
-            if (board[row][col] != 0) {
-                board[row][col] = 0
-                count++
+    private fun removeNumbers(board: Array<Array<Int>>, cellsToRemove: Int): Int {
+        val positions = mutableListOf<Triple<Int, Int, Int>>() // row, col, original value
+
+        // First, collect all filled positions with their values
+        for (row in 0 until 9) {
+            for (col in 0 until 9) {
+                if (board[row][col] != 0) {
+                    positions.add(Triple(row, col, board[row][col]))
+                }
             }
         }
+
+        // Shuffle positions to randomize removal attempts
+        positions.shuffle()
+
+        var removedCount = 0
+        var posIndex = 0
+
+        while (removedCount < cellsToRemove && posIndex < positions.size) {
+            val (row, col, originalValue) = positions[posIndex]
+
+            // Try removing this number
+            board[row][col] = 0
+
+            if (hasUniqueSolution(board)) {
+                removedCount++
+            } else {
+                // If multiple solutions exist, restore the number
+                board[row][col] = originalValue
+            }
+
+            posIndex++
+        }
+
+        return removedCount
+    }
+
+    private fun hasUniqueSolution(board: Array<Array<Int>>): Boolean {
+        var solutionsFound = 0
+        val tempBoard = Array(9) { row -> Array(9) { col -> board[row][col] } }
+
+        fun backtrack(row: Int = 0, col: Int = 0): Boolean {
+            if (row == 9) {
+                solutionsFound++
+                return solutionsFound < 2 // Stop if we found more than one solution
+            }
+
+            val nextRow = if (col == 8) row + 1 else row
+            val nextCol = if (col == 8) 0 else col + 1
+
+            // If this cell is already filled, move to next cell
+            if (tempBoard[row][col] != 0) {
+                return backtrack(nextRow, nextCol)
+            }
+
+            // Try each number in this cell
+            for (num in 1..9) {
+                if (isValid(tempBoard, row, col, num)) {
+                    tempBoard[row][col] = num
+                    if (!backtrack(nextRow, nextCol)) {
+                        return false // Stop if we found multiple solutions
+                    }
+                    tempBoard[row][col] = 0 // Backtrack
+                }
+            }
+
+            return true
+        }
+
+        backtrack()
+        return solutionsFound == 1
     }
 
     private fun isValid(board: Array<Array<Int>>, row: Int, col: Int, number: Int): Boolean {
