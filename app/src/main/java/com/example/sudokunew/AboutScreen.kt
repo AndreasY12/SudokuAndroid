@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ fun AboutScreen(navController:NavHostController) {
             ),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "About") },
+                title = {Text(text = stringResource(id = R.string.about_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
@@ -73,13 +74,12 @@ fun AboutScreen(navController:NavHostController) {
             item {
                 // "Who Am I?" Section
                 Text(
-                    text = "Who Am I?",
+                    text = stringResource(id = R.string.who_am_i),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Hello, I am Andreas Yiangou. I am from Cyprus and currently a fourth year BSc Computer Science student at the University of Nicosia. " +
-                            "This app is the first app I have developed for Android and I am excited to share it with you.",
+                    text = stringResource(id = R.string.who_am_i_description),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 8.dp),
                     textAlign = TextAlign.Justify
@@ -116,16 +116,12 @@ fun AboutScreen(navController:NavHostController) {
             item {
                 // "About the Project" Section
                 Text(
-                    text = "About the Project",
+                    text = stringResource(id = R.string.about_the_project),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "This Sudoku app aims to provide a simple yet elegant solution to solving" +
-                            " and playing Sudoku puzzles. The main goal of the project is to offer an intuitive" +
-                            " interface with features like easy puzzle generation, undo functionality, and a " +
-                            "clean design. It was developed in collaboration with Dr. Andreas Savva as part " +
-                            "of my final year project for my BSc in Computer Science at the University of Nicosia.",
+                    text = stringResource(id = R.string.about_the_project_description),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 8.dp),
                     textAlign = TextAlign.Justify
@@ -138,7 +134,7 @@ fun AboutScreen(navController:NavHostController) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Thank you for checking out my app!",
+                        text = stringResource(id = R.string.thank_you_message),
                         color = Color.Blue,
                         style = MaterialTheme.typography.displayMedium.copy(
                             fontSize = 20.sp,
@@ -157,7 +153,7 @@ fun AboutScreen(navController:NavHostController) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Enjoy!",
+                        text = stringResource(id = R.string.enjoy_message),
                         color = Color.Blue,
                         style = MaterialTheme.typography.displayMedium.copy(
                             fontSize = 32.sp,

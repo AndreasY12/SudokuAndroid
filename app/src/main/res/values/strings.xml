@@ -1,9 +1,65 @@
 <resources>
-    <string name="app_name">SudokuNew</string>
-    <string name="title_activity_start_screen">StartScreen</string>
-    <string name="title_activity_game_screen">GameScreen</string>
-    <string name="title_activity_rules_screen">RulesScreen</string>
-    <string name="title_activity_about_screen">AboutScreen</string>
-    <string name="title_activity_sudoku_app">SudokuApp</string>
-    <string name="title_activity_load_game_screen">LoadGameScreen</string>
+    <string name="app_name" translatable="false">SudokuNew</string>
+    <string name="title_activity_start_screen" translatable="false">StartScreen</string>
+    <string name="title_activity_game_screen" translatable="false">GameScreen</string>
+    <string name="title_activity_rules_screen" translatable="false">RulesScreen</string>
+    <string name="title_activity_about_screen" translatable="false">AboutScreen</string>
+    <string name="title_activity_sudoku_app" translatable="false">SudokuApp</string>
+    <string name="title_activity_load_game_screen" translatable="false">LoadGameScreen</string>
+    <string name="about_title">About</string>
+    <string name="back_button_description">Back</string>
+    <string name="who_am_i">Who Am I?</string>
+    <string name="who_am_i_description">Hello, I am Andreas Yiangou. I am from Cyprus and currently a fourth year BSc Computer Science student at the University of Nicosia. This app is the first app I have developed for Android and I am excited to share it with you.</string>
+    <string name="about_the_project">About the Project</string>
+    <string name="about_the_project_description">This Sudoku app aims to provide a simple yet elegant solution to solving and playing Sudoku puzzles. The main goal of the project is to offer an intuitive interface with features like easy puzzle generation, undo functionality, and a clean design. It was developed in collaboration with Dr. Andreas Savva as part of my final year project for my BSc in Computer Science at the University of Nicosia.</string>
+    <string name="thank_you_message">Thank you for checking out my app!</string>
+    <string name="enjoy_message">Enjoy!</string>
+    <string name="save_game_prompt">Save Game?</string>
+    <string name="save_game_message">Do you want to save the current game?</string>
+    <string name="save">Save</string>
+    <string name="dont_save">Don\'t Save</string>
+    <string name="show_solution_prompt">Show Solution?</string>
+    <string name="show_solution_button">Show Solution</string>
+    <string name="show_solution_message">Are you sure you want to see the solution? This will end your current game.</string>
+    <string name="show_solution">Show Solution</string>
+    <string name="cancel">Cancel</string>
+    <string name="time">Time: </string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="completed_message">You\'ve completed the puzzle in </string>
+    <string name="new_game">New Game</string>
+    <string name="icon_actions">Icon Actions</string>
+    <string name="undo_action">Undo: Reverses the last action.</string>
+    <string name="clear_action">Clear: Clears a selected cell.</string>
+    <string name="notes_action">Notes: Allows you to enter numbers as notes in a cell.</string>
+    <string name="hints_action">Hints: Provides a helpful tip.</string>
+    <string name="shake_action">Shake the phone to show the solution!</string>
+    <string name="ok">OK</string>
+    <string name="delete_all_games_title">Delete all games</string>
+    <string name="delete_all_games_message">Are you sure you want to delete all the saved games? This action cannot be undone!</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="saved_games">Saved Games</string>
+    <string name="back">Back</string>
+    <string name="delete_all">Delete All</string>
+    <string name="no_saved_games">No saved games found</string>
+    <string name="delete_game_title">Delete Game</string>
+    <string name="delete_game_message">Are you sure you want to delete this game?</string>
+    <string name="difficulty">Difficulty: </string>
+    <string name="created">Created: </string>
+    <string name="delete_game">Delete game</string>
+    <string name="sudoku_rules">Sudoku Rules</string>
+    <string name="how_to_play">How to Play Sudoku</string>
+    <string name="rule_1">1) Fill in all cells with numbers from 1 to 9</string>
+    <string name="rule_2">2) No repeating numbers in the same row</string>
+    <string name="rule_3">3) No repeating numbers in the same column</string>
+    <string name="rule_4">4) No repeating numbers in any 3x3 subgrid</string>
+    <string name="game_saved">Game saved successfully!</string>
+    <string name="language"> Language:</string>
+    <string name="select_difficulty">Select Difficulty</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="load_game">Load Game</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
 </resources>

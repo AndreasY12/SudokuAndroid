@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -161,10 +162,10 @@ fun GameScreen(
     if (showSaveDialog) {
         AlertDialog(
             onDismissRequest = { showSaveDialog = false },
-            title = { Text("Save Game?", color = colors.onBackground) },
+            title = { Text(stringResource(R.string.save_game_prompt), color = colors.onBackground) },
             text = {
                 Text(
-                    "Do you want to save the current game?",
+                    stringResource(R.string.save_game_message),
                     color = colors.onBackground
                 )
             },
@@ -179,7 +180,7 @@ fun GameScreen(
                         }
                     }
                 ) {
-                    Text("Save", color = colors.primary)
+                    Text(stringResource(R.string.save), color = colors.primary)
                 }
             },
             dismissButton = {
@@ -192,7 +193,7 @@ fun GameScreen(
                         }
                     }
                 ) {
-                    Text("Don't Save", color = colors.primary)
+                    Text(stringResource(R.string.dont_save), color = colors.primary)
                 }
             }
         )
@@ -205,10 +206,10 @@ fun GameScreen(
                 Log.d("GameScreen", "Dialog dismissed")
                 showSolutionConfirmDialog = false
             },
-            title = { Text("Show Solution?", color = colors.onBackground) },
+            title = { Text(stringResource(R.string.show_solution_prompt), color = colors.onBackground) },
             text = {
                 Text(
-                    "Are you sure you want to see the solution? This will end your current game.",
+                    stringResource(R.string.show_solution_message),
                     color = colors.onBackground
                 )
             },
@@ -220,7 +221,9 @@ fun GameScreen(
                         viewModel.showSolution()
                     }
                 ) {
-                    Text("Show Solution", color = colors.primary)
+                    Text(
+                        stringResource(R.string.show_solution),
+                        color = colors.primary)
                 }
             },
             dismissButton = {
@@ -230,7 +233,7 @@ fun GameScreen(
                         showSolutionConfirmDialog = false
                     }
                 ) {
-                    Text("Cancel", color = colors.primary)
+                    Text(stringResource(R.string.cancel), color = colors.primary)
                 }
             }
         )
@@ -339,10 +342,10 @@ fun GameScreen(
         if (showCompletedDialog) {
             AlertDialog(
                 onDismissRequest = { showCompletedDialog = false },
-                title = { Text("Congratulations!", color = colors.onBackground) },
+                title = { Text(stringResource(R.string.congratulations), color = colors.onBackground) },
                 text = {
                     Text(
-                        "You've completed the puzzle in ${formatTime(state.timer)}!",
+                        stringResource(R.string.completed_message) + "${formatTime(state.timer)}!",
                         color = colors.onBackground
                     )
                 },
@@ -351,7 +354,7 @@ fun GameScreen(
                         showCompletedDialog = false
                         viewModel.startNewGame(difficulty)
                     }) {
-                        Text("New Game", color = colors.primary)
+                        Text(stringResource(R.string.new_game), color = colors.primary)
                     }
                 }
             )
@@ -361,7 +364,7 @@ fun GameScreen(
     if (showHelpDialog) {
         AlertDialog(
             onDismissRequest = { showHelpDialog = false },
-            title = { Text("Icon Actions", color = colors.onBackground) },
+            title = { Text(stringResource(R.string.icon_actions), color = colors.onBackground) },
             text = {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -372,7 +375,7 @@ fun GameScreen(
                             tint = colors.onBackground
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text("Undo: Reverses the last action.", color = colors.onBackground)
+                        Text(stringResource(R.string.undo_action), color = colors.onBackground)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -382,7 +385,7 @@ fun GameScreen(
                             tint = colors.onBackground
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text("Clear: Clears a selected cell.", color = colors.onBackground)
+                        Text(stringResource(R.string.clear_action), color = colors.onBackground)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -393,7 +396,7 @@ fun GameScreen(
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
-                            "Notes: Allows you to enter numbers as notes in a cell.",
+                            stringResource(R.string.notes_action),
                             color = colors.onBackground
                         )
                     }
@@ -405,7 +408,7 @@ fun GameScreen(
                             tint = colors.onBackground
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text("Hints: Provides a helpful tip.", color = colors.onBackground)
+                        Text(stringResource(R.string.hints_action), color = colors.onBackground)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -415,13 +418,13 @@ fun GameScreen(
                             tint = colors.onBackground
                         )
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text("Shake the phone to show the solution!", color = colors.onBackground)
+                        Text(stringResource(R.string.shake_action), color = colors.onBackground)
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = { showHelpDialog = false }) {
-                    Text("OK", color = colors.primary)
+                    Text(stringResource(R.string.ok), color = colors.primary)
                 }
             }
         )
@@ -656,7 +659,7 @@ fun ShowSolutionButton(
             onClick = onSolutionClicked,
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
-            Text("Show Solution")
+            Text(stringResource(R.string.show_solution_button))
         }
     }
 }

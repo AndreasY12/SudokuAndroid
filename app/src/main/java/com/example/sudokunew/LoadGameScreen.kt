@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -62,18 +63,18 @@ fun LoadGameScreen(
     if(showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
-            title = { Text("Delete all games") },
+            title = { Text(stringResource(R.string.delete_all_games_title)) },
             text = {
-                Text("Are you sure you want to delete all the saved games?\nThis action cannot be undone!")
+                Text(stringResource(R.string.delete_all_games_message))
             },
             confirmButton = {
                 TextButton(onClick = { viewModel.deleteAllSavedGames(); showConfirmDialog = false }) {
-                    Text("Yes")
+                    Text(stringResource(R.string.yes))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showConfirmDialog = false }) {
-                    Text("No")
+                    Text(stringResource(R.string.no))
                 }
             }
         )
@@ -84,7 +85,7 @@ fun LoadGameScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Saved Games",
+                        text = stringResource(R.string.saved_games),
                         style = MaterialTheme.typography.headlineSmall
                     )
                 },
@@ -100,7 +101,7 @@ fun LoadGameScreen(
                     if (savedGames.isNotEmpty()) {
                         FilledTonalButton(
                             onClick = { showConfirmDialog = true },
-                            content = { Text("Delete All") },
+                            content = { Text(stringResource(R.string.delete_all)) },
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -122,7 +123,7 @@ fun LoadGameScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No saved games found",
+                        text = stringResource(R.string.no_saved_games),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -164,18 +165,18 @@ fun ConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Delete Game") },
+        title = { Text(stringResource(R.string.delete_game_title)) },
         text = {
-            Text("Are you sure you want to delete this game?")
+            Text(stringResource(R.string.delete_game_message))
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Yes")
+                Text(stringResource(R.string.yes))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("No")
+                Text(stringResource(R.string.no))
             }
         }
     )
@@ -201,16 +202,16 @@ private fun SavedGameItem(
         ) {
             Column {
                 Text(
-                    text = "Difficulty: ${game.difficulty}",
+                    text = stringResource(R.string.difficulty)+" ${game.difficulty}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Created: ${formatDate(game.createdAt)}",
+                    text = stringResource(R.string.created) + " ${formatDate(game.createdAt)}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Time: ${formatTime(game.timer)}",
+                    text = stringResource(R.string.time) + " ${formatTime(game.timer)}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

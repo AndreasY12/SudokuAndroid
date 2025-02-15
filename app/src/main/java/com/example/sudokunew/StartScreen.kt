@@ -1,6 +1,6 @@
 package com.example.sudokunew
 
- import android.annotation.SuppressLint
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -9,6 +9,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -39,13 +44,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
+import java.util.Locale
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -61,11 +69,12 @@ fun StartScreen(
     var showButtons by remember { mutableStateOf(false) }
     var showDifficultyDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val message = stringResource(R.string.game_saved)
 
     LaunchedEffect(gameJustSaved) {
         if (gameJustSaved) {
             snackbarHostState.showSnackbar(
-                message = "Game saved successfully!",
+                message = message,
                 duration = SnackbarDuration.Short
             )
         }
@@ -93,6 +102,8 @@ fun StartScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                LanguageSelector()
 
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -132,6 +143,99 @@ fun StartScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LanguageSelector(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.padding(top = 80.dp))
+        Icon(
+            imageVector = Icons.Default.Language,
+            contentDescription = "Language",
+            tint = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = stringResource(R.string.language),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        // Language buttons
+        LanguageButton(
+            emoji = "🇬🇧",
+            isSelected = true,
+            onClick = {
+                activity?.let{
+                    restartActivity(it)
+                }
+            }
+        )
+
+        LanguageButton(
+            emoji = "🇬🇷",
+            isSelected = false,
+            onClick = {
+                activity?.let{
+                    restartActivity(it)
+                }
+            }
+        )
+
+        LanguageButton(
+            emoji = "🇩🇪",
+            isSelected = false,
+            onClick = {
+                activity?.let{
+                    restartActivity(it)
+                }
+            }
+        )
+
+        LanguageButton(
+            emoji = "🇪🇸",
+            isSelected = false,
+            onClick = {
+                activity?.let{
+                    restartActivity(it)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun LanguageButton(
+    emoji: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.height(32.dp),
+        contentPadding = PaddingValues(4.dp),
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onBackground
+            }
+        )
+    ) {
+        Text(
+            text = emoji,
+            fontSize = 16.sp,
+            modifier = Modifier.alpha(if (isSelected) 1f else 0.6f)
+        )
     }
 }
 
@@ -177,7 +281,7 @@ fun ButtonGroup(
             )
         ) {
             Text(
-                text = "New Game",
+                text = stringResource(R.string.new_game),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -192,7 +296,7 @@ fun ButtonGroup(
             )
         ) {
             Text(
-                text = "Load Game",
+                text = stringResource(R.string.load_game),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -205,7 +309,7 @@ fun ButtonGroup(
             )
         ) {
             Text(
-                text = "Sudoku Rules",
+                text = stringResource(R.string.sudoku_rules),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -218,7 +322,7 @@ fun ButtonGroup(
             )
         ) {
             Text(
-                text = "About",
+                text = stringResource(R.string.about),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -238,7 +342,7 @@ fun ButtonGroup(
             )
         ) {
             Text(
-                text = "Exit",
+                text = stringResource(R.string.exit),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -255,21 +359,21 @@ fun DifficultySelectionDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Select Difficulty",
+                text = stringResource(R.string.select_difficulty),
                 color = colors.onBackground,
                 style = MaterialTheme.typography.titleMedium
             )
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                DifficultyButton("Easy", Difficulty.EASY, onDifficultySelected)
-                DifficultyButton("Medium", Difficulty.MEDIUM, onDifficultySelected)
-                DifficultyButton("Hard", Difficulty.HARD, onDifficultySelected)
+                DifficultyButton(stringResource(R.string.easy), Difficulty.EASY, onDifficultySelected)
+                DifficultyButton(stringResource(R.string.medium), Difficulty.MEDIUM, onDifficultySelected)
+                DifficultyButton(stringResource(R.string.hard), Difficulty.HARD, onDifficultySelected)
             }
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = colors.primary)
+                Text(stringResource(R.string.cancel), color = colors.primary)
             }
         }
     )
@@ -295,4 +399,11 @@ fun DifficultyButton(
             style = MaterialTheme.typography.titleMedium
         )
     }
+}
+
+private fun restartActivity(activity: Activity) {
+    val intent = activity.intent
+    activity.finish()
+    activity.startActivity(intent)
+    //activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 }
