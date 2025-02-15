@@ -198,7 +198,7 @@ fun GameScreen(
         )
     }
 
-    if (showSolutionConfirmDialog) {
+    if (showSolutionConfirmDialog && !showSaveDialog) {
         Log.d("GameScreen", "Showing shake confirmation dialog")
         AlertDialog(
             onDismissRequest = {
