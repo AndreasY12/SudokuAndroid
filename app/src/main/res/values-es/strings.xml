@@ -26,7 +26,7 @@
     <string name="clear_action">Borrar: Borra una celda seleccionada.</string>
     <string name="notes_action">Notas: Te permite ingresar números como notas en una celda.</string>
     <string name="hints_action">Pistas: Proporciona un consejo útil.</string>
-    <string name="shake_action">¡Agita el teléfono para mostrar la solución!</string>
+    <string name="shake_action">¡Agite el dispositivo para mostrar la solución!</string>
     <string name="ok">OK</string>
     <string name="delete_all_games_title">Eliminar todas las partidas</string>
     <string name="delete_all_games_message">¿Estás seguro de que quieres eliminar todas las partidas guardadas? ¡Esta acción no se puede deshacer!</string>

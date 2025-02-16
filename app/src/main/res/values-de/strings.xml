@@ -26,7 +26,7 @@
     <string name="clear_action">Löschen: Löscht eine ausgewählte Zelle.</string>
     <string name="notes_action">Notizen: Ermöglicht das Eintragen von Zahlen als Notizen in eine Zelle.</string>
     <string name="hints_action">Hinweise: Gibt einen hilfreichen Tipp.</string>
-    <string name="shake_action">Schütteln Sie das Telefon, um die Lösung anzuzeigen!</string>
+    <string name="shake_action">Schütteln Sie das Gerät, um die Lösung anzuzeigen!</string>
     <string name="ok">OK</string>
     <string name="delete_all_games_title">Alle Spiele löschen</string>
     <string name="delete_all_games_message">Möchten Sie wirklich alle gespeicherten Spiele löschen? Diese Aktion kann nicht rückgängig gemacht werden!</string>

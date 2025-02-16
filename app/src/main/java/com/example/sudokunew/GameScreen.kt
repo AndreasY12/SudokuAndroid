@@ -303,7 +303,7 @@ fun GameScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Time: ${formatTime(state.timer)}",
+                text = stringResource(R.string.time) + " ${formatTime(state.timer)}",
                 fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 color = colors.onBackground
