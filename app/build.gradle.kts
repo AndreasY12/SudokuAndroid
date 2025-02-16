@@ -43,7 +43,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+
 }
+
 
 dependencies {
 
@@ -62,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.jetbrains.kotlinx.serialization.json)
+    implementation(libs.androidx.appcompat)
     val roomVersion = "2.6.1"
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

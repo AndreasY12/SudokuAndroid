@@ -17,9 +17,9 @@
     <string name="show_solution_message">¿Estás seguro de que quieres ver la solución? Esto terminará tu partida actual.</string>
     <string name="show_solution">Mostrar solución</string>
     <string name="cancel">Cancelar</string>
-    <string name="time">Tiempo: %1$s</string>
+    <string name="time">"Tiempo: "</string>
     <string name="congratulations">¡Felicidades!</string>
-    <string name="completed_message">¡Has completado el rompecabezas en %1$s!</string>
+    <string name="completed_message">"¡Has completado el rompecabezas en "</string>
     <string name="new_game">Nuevo juego</string>
     <string name="icon_actions">Acciones de icono</string>
     <string name="undo_action">Deshacer: Revierte la última acción.</string>
@@ -38,8 +38,8 @@
     <string name="no_saved_games">No se encontraron partidas guardadas</string>
     <string name="delete_game_title">Eliminar partida</string>
     <string name="delete_game_message">¿Estás seguro de que quieres eliminar esta partida?</string>
-    <string name="difficulty">Dificultad: %1$s</string>
-    <string name="created">Creado: %1$s</string>
+    <string name="difficulty">"Dificultad: "</string>
+    <string name="created">Creado:</string>
     <string name="delete_game">Eliminar partida</string>
     <string name="sudoku_rules">Reglas del Sudoku</string>
     <string name="how_to_play">Cómo jugar al Sudoku</string>

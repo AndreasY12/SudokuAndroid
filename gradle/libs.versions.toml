@@ -15,6 +15,7 @@ navigation-compose = "2.8.5"
 room-common = "2.6.1"
 room-ktx = "2.6.1"
 room = "2.6.1"
+appcompat = "1.7.0"
 
 
 [libraries]
@@ -45,6 +46,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "konfetti-compose" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "room-common" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room-ktx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 
 [plugins]

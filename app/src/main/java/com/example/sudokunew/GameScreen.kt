@@ -676,11 +676,16 @@ fun ShowConfetti() {
     )
 }
 
+
+@Composable
 private fun getDifficulty(difficulty: Difficulty): String {
+    val easy = stringResource(R.string.easy)
+    val medium = stringResource(R.string.medium)
+    val hard = stringResource(R.string.hard)
     return when (difficulty) {
-        Difficulty.EASY -> "Easy"
-        Difficulty.MEDIUM -> "Medium"
-        Difficulty.HARD -> "Hard"
+        Difficulty.EASY -> easy
+        Difficulty.MEDIUM -> medium
+        Difficulty.HARD -> hard
     }
 }
 

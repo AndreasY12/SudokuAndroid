@@ -202,7 +202,7 @@ private fun SavedGameItem(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.difficulty)+" ${game.difficulty}",
+                    text = stringResource(R.string.difficulty)+" ${formatDifficulty( game.difficulty)}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -232,6 +232,18 @@ private fun SavedGameItem(
 private fun formatDate(timestamp: Long): String {
     return SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
         .format(Date(timestamp))
+}
+
+@Composable
+private fun formatDifficulty(difficulty: Difficulty): String {
+    val easy = stringResource(R.string.easy)
+    val medium = stringResource(R.string.medium)
+    val hard = stringResource(R.string.hard)
+    return when (difficulty) {
+        Difficulty.EASY -> easy
+        Difficulty.MEDIUM -> medium
+        Difficulty.HARD -> hard
+    }
 }
 
 private fun formatTime(milliseconds: Long): String {

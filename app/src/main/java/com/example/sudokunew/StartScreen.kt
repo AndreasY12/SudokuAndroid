@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import java.util.Locale
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -152,6 +151,10 @@ fun LanguageSelector(
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
+    val languageChangeHelper by lazy {
+        LanguageChangeHelper()
+    }
+    val currentLanguageCode = languageChangeHelper.getLanguageCode(context)
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -173,8 +176,9 @@ fun LanguageSelector(
         // Language buttons
         LanguageButton(
             emoji = "🇬🇧",
-            isSelected = true,
+            isSelected = currentLanguageCode == "en",
             onClick = {
+                LanguageChangeHelper().changeLanguage(context, "en")
                 activity?.let{
                     restartActivity(it)
                 }
@@ -183,8 +187,9 @@ fun LanguageSelector(
 
         LanguageButton(
             emoji = "🇬🇷",
-            isSelected = false,
+            isSelected = currentLanguageCode == "el",
             onClick = {
+                LanguageChangeHelper().changeLanguage(context, "el")
                 activity?.let{
                     restartActivity(it)
                 }
@@ -193,8 +198,9 @@ fun LanguageSelector(
 
         LanguageButton(
             emoji = "🇩🇪",
-            isSelected = false,
+            isSelected = currentLanguageCode == "de",
             onClick = {
+                LanguageChangeHelper().changeLanguage(context, "de")
                 activity?.let{
                     restartActivity(it)
                 }
@@ -203,8 +209,9 @@ fun LanguageSelector(
 
         LanguageButton(
             emoji = "🇪🇸",
-            isSelected = false,
+            isSelected = currentLanguageCode == "es",
             onClick = {
+                LanguageChangeHelper().changeLanguage(context, "es")
                 activity?.let{
                     restartActivity(it)
                 }

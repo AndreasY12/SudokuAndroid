@@ -19,9 +19,9 @@
     <string name="show_solution_message">Είστε σίγουροι ότι θέλετε να δείτε τη λύση; Αυτό θα τερματίσει το τρέχον παιχνίδι σας.</string>
     <string name="show_solution">Εμφάνιση Λύσης</string>
     <string name="cancel">Ακύρωση</string>
-    <string name="time">Χρόνος: %1$s</string>
+    <string name="time">"Χρόνος: "</string>
     <string name="congratulations">Συγχαρητήρια!</string>
-    <string name="completed_message">Ολοκληρώσατε το παζλ σε %1$s!</string>
+    <string name="completed_message">"Ολοκληρώσατε το παζλ σε "</string>
     <string name="new_game">Νέο Παιχνίδι</string>
     <string name="icon_actions">Ενέργειες εικονιδίου</string>
     <string name="undo_action">Αναίρεση: Αντιστρέφει την τελευταία ενέργεια.</string>
@@ -40,8 +40,8 @@
     <string name="no_saved_games">Δεν βρέθηκαν αποθηκευμένα παιχνίδια</string>
     <string name="delete_game_title">Διαγραφή παιχνιδιού</string>
     <string name="delete_game_message">Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το παιχνίδι;</string>
-    <string name="difficulty">Δυσκολία: %1$s</string>
-    <string name="created">Δημιουργήθηκε: %1$s</string>
+    <string name="difficulty">"Δυσκολία: "</string>
+    <string name="created">"Δημιουργήθηκε: "</string>
     <string name="delete_game">Διαγραφή παιχνιδιού</string>
     <string name="sudoku_rules">Κανόνες Sudoku</string>
     <string name="how_to_play">Πώς να παίξετε Sudoku</string>
