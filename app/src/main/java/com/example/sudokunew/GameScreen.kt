@@ -442,6 +442,13 @@ fun SudokuGrid(
     val gridHeight = screenHeight * 0.7f
     val colors = MaterialTheme.colorScheme
 
+    // Find the selected cell position
+    val selectedPosition = board.flatMapIndexed { rowIndex, row ->
+        row.mapIndexed { colIndex, cell ->
+            if (cell.isSelected) Pair(rowIndex, colIndex) else null
+        }
+    }.filterNotNull().firstOrNull()
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -462,6 +469,7 @@ fun SudokuGrid(
                     board = board,
                     rowStart = rowStart,
                     colStart = colStart,
+                    selectedPosition = selectedPosition,
                     onCellSelected = onCellSelected,
                     modifier = Modifier.border(2.dp, colors.onBackground)
                 )
@@ -475,6 +483,7 @@ fun SudokuSubGrid(
     board: List<List<SudokuCell>>,
     rowStart: Int,
     colStart: Int,
+    selectedPosition: Pair<Int, Int>?,
     onCellSelected: (Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -483,8 +492,12 @@ fun SudokuSubGrid(
             Row(modifier = Modifier.weight(1f)) {
                 for (col in colStart until colStart + 3) {
                     val cell = board[row][col]
+                    val isInSelectedRow = selectedPosition?.first == row
+                    val isInSelectedColumn = selectedPosition?.second == col
+
                     SudokuCell(
                         cell = cell,
+                        isInSelectedLine = isInSelectedRow || isInSelectedColumn,
                         onClick = { onCellSelected(row, col) },
                         modifier = Modifier
                             .weight(1f)
@@ -499,21 +512,25 @@ fun SudokuSubGrid(
 @Composable
 fun SudokuCell(
     cell: SudokuCell,
+    isInSelectedLine: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
+
+    // Define background color based on cell state
+    val backgroundColor = when {
+        cell.isSelected -> colors.secondary.copy(alpha = 0.3f)
+        !cell.isValid -> colors.error.copy(alpha = 0.3f)
+        isInSelectedLine -> colors.secondary.copy(alpha = 0.1f) // Subtle highlight for row/column
+        else -> Color.Transparent
+    }
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick)
-            .background(
-                when {
-                    cell.isSelected -> colors.secondary.copy(alpha = 0.3f)
-                    !cell.isValid -> colors.error.copy(alpha = 0.3f)
-                    else -> Color.Transparent
-                }
-            ),
+            .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         if (cell.value != 0) {
