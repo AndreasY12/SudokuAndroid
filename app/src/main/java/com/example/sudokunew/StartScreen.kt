@@ -41,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,15 +68,17 @@ fun StartScreen(
     var showLogo by remember { mutableStateOf(false) }
     var showButtons by remember { mutableStateOf(false) }
     var showDifficultyDialog by remember { mutableStateOf(false) }
+    var showSnackbar by rememberSaveable { mutableStateOf(gameJustSaved) }
     val snackbarHostState = remember { SnackbarHostState() }
     val message = stringResource(R.string.game_saved)
 
-    LaunchedEffect(gameJustSaved) {
-        if (gameJustSaved) {
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
             snackbarHostState.showSnackbar(
                 message = message,
                 duration = SnackbarDuration.Short
             )
+            showSnackbar = false
         }
     }
 
