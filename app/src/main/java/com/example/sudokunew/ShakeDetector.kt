@@ -10,7 +10,7 @@ class ShakeDetector(private val onShake: () -> Unit) : SensorEventListener {
     companion object {
         private const val TAG = "com.example.sudokunew.ShakeDetector"
         private const val SHAKE_THRESHOLD = 5.5f // Lower threshold for easier detection. Maybe adjust this value...
-        private const val MIN_TIME_BETWEEN_SHAKES = 2000L // 2 second cooldown
+        private const val MIN_TIME_BETWEEN_SHAKES = 4000L // 4 second cooldown
     }
 
     private var lastShakeTime: Long = 0

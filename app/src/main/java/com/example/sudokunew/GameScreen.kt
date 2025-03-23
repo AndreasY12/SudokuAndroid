@@ -345,7 +345,7 @@ fun GameScreen(
                 title = { Text(stringResource(R.string.congratulations), color = colors.onBackground) },
                 text = {
                     Text(
-                        stringResource(R.string.completed_message) + "${formatTime(state.timer)}!",
+                        stringResource(R.string.completed_message) + " ${formatTime(state.timer)}!",
                         color = colors.onBackground
                     )
                 },
