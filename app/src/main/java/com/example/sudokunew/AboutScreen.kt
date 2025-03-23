@@ -98,10 +98,10 @@ fun AboutScreen(navController:NavHostController) {
                         .padding(vertical = 16.dp)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.portrait_placeholder),
+                        painter = painterResource(R.drawable.me),
                         contentDescription = "Profile Picture",
                         modifier = Modifier
-                            .size(150.dp)
+                            .size(300.dp)
                             .align(Alignment.Center)
 
                     )
