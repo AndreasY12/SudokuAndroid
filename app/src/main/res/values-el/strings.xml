@@ -46,7 +46,7 @@
     <string name="sudoku_rules">Κανόνες Sudoku</string>
     <string name="how_to_play">Πώς να παίξετε Sudoku</string>
     <string name="rule_1">1) Συμπληρώστε όλα τα κελιά με αριθμούς από το 1 έως το 9</string>
-    <string name="rule_2">3) Μη επαναλαμβανόμενοι αριθμοί στην ίδια σειρά</string>
+    <string name="rule_2">2) Μη επαναλαμβανόμενοι αριθμοί στην ίδια σειρά</string>
     <string name="rule_3">3) Μη επαναλαμβανόμενοι αριθμοί στην ίδια στήλη</string>
     <string name="rule_4">4) Μη επαναλαμβανόμενοι αριθμοί σε κανένα υποδίκτυο 3x3</string>
     <string name="game_saved">Το παιχνίδι αποθηκεύτηκε με επιτυχία!</string>
