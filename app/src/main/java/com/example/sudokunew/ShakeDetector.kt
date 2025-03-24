@@ -3,55 +3,54 @@ package com.example.sudokunew
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.util.Log
-import kotlin.math.abs
+import android.hardware.SensorManager
+import kotlin.math.pow
+import kotlin.math.sqrt
+
+//Shake Detector Class from https://github.com/AlShevelev
+//https://gist.github.com/AlShevelev/afae84d0d9245eb6a8044f20bffa63f5
 
 class ShakeDetector(private val onShake: () -> Unit) : SensorEventListener {
-    companion object {
-        private const val TAG = "com.example.sudokunew.ShakeDetector"
-        private const val SHAKE_THRESHOLD = 5.5f // Lower threshold for easier detection. Maybe adjust this value...
-        private const val MIN_TIME_BETWEEN_SHAKES = 4000L // 4 second cooldown
+    private companion object {
+        const val SHAKE_THRESHOLD_GRAVITY = 2.7f          // In "Gs" (one Earth gravity unit)
+
+        const val SHAKE_SLOP_TIME = 500                   // In [ms]
+        const val SHAKE_COUNT_RESET_TIME = 3000
     }
 
-    private var lastShakeTime: Long = 0
-    private var lastAccel = floatArrayOf(0f, 0f, 0f)
-    private var isFirstReading = true
+    private var shakeTimestamp: Long = 0
+    private var shakesCount: Int = 0
+
+   // private var lastShakeTime: Long = 0
+    //private var lastAccel = floatArrayOf(0f, 0f, 0f)
+    //private var isFirstReading = true
 
     override fun onSensorChanged(event: SensorEvent) {
-        val currentTime = System.currentTimeMillis()
+        val gX = (event.values[0] / SensorManager.GRAVITY_EARTH).toDouble()
+        val gY = event.values[1] / SensorManager.GRAVITY_EARTH
+        val gZ = event.values[2] / SensorManager.GRAVITY_EARTH
 
-        // Get current accelerometer values
-        val currentAccel = event.values.clone()
+        // gForce will be close to 1 when there is no movement.
+        val gForce = sqrt(gX.pow(2) + gY.pow(2) + gZ.pow(2))
 
-        if (isFirstReading) {
-            isFirstReading = false
-            lastAccel = currentAccel
-            return
-        }
+        if (gForce > SHAKE_THRESHOLD_GRAVITY) {
 
-        // Check if enough time has passed since last shake
-        if (currentTime - lastShakeTime < MIN_TIME_BETWEEN_SHAKES) {
-            return
-        }
+            val now = System.currentTimeMillis()
 
-        // Calculate acceleration difference from last reading
-        val deltaX = abs(lastAccel[0] - currentAccel[0])
-        val deltaY = abs(lastAccel[1] - currentAccel[1])
-        val deltaZ = abs(lastAccel[2] - currentAccel[2])
+            // ignore shake events too close to each other (500ms)
+            if (shakeTimestamp + SHAKE_SLOP_TIME > now) {
+                return
+            }
 
-        Log.d(TAG, "Delta acceleration - X: $deltaX, Y: $deltaY, Z: $deltaZ")
+            // reset the shake count after 3 seconds of no shakes
+            if (shakeTimestamp + SHAKE_COUNT_RESET_TIME < now) {
+                shakesCount = 0
+            }
 
-        // Check if acceleration exceeds threshold
-        if ((deltaX > SHAKE_THRESHOLD && deltaY > SHAKE_THRESHOLD) ||
-            (deltaX > SHAKE_THRESHOLD && deltaZ > SHAKE_THRESHOLD) ||
-            (deltaY > SHAKE_THRESHOLD && deltaZ > SHAKE_THRESHOLD)) {
-
-            Log.d(TAG, "Shake detected!")
-            lastShakeTime = currentTime
+            shakeTimestamp = now
+            shakesCount++
             onShake()
         }
-
-        lastAccel = currentAccel
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {

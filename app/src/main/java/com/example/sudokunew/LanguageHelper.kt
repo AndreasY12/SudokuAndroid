@@ -8,9 +8,9 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
-import java.util.*
 import androidx.core.content.edit
+import androidx.core.os.LocaleListCompat
+import java.util.Locale
 
 class LanguageChangeHelper {
 
