@@ -96,6 +96,7 @@ fun GameScreen(
     val layoutDirection = LocalLayoutDirection.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
     val soundPlayer = SoundPlayer(LocalContext.current)
+    var solutionShowed by rememberSaveable { mutableStateOf(false) }
     //val difficulty = state.difficulty
 
     val colors = MaterialTheme.colorScheme
@@ -156,13 +157,20 @@ fun GameScreen(
     }*/
 
     BackHandler {
-        showSaveDialog = true
+        if (!solutionShowed) {
+            showSaveDialog = true
+        }
     }
 
     if (showSaveDialog) {
         AlertDialog(
             onDismissRequest = { showSaveDialog = false },
-            title = { Text(stringResource(R.string.save_game_prompt), color = colors.onBackground) },
+            title = {
+                Text(
+                    stringResource(R.string.save_game_prompt),
+                    color = colors.onBackground
+                )
+            },
             text = {
                 Text(
                     stringResource(R.string.save_game_message),
@@ -206,7 +214,12 @@ fun GameScreen(
                 Log.d("GameScreen", "Dialog dismissed")
                 showSolutionConfirmDialog = false
             },
-            title = { Text(stringResource(R.string.show_solution_prompt), color = colors.onBackground) },
+            title = {
+                Text(
+                    stringResource(R.string.show_solution_prompt),
+                    color = colors.onBackground
+                )
+            },
             text = {
                 Text(
                     stringResource(R.string.show_solution_message),
@@ -218,12 +231,14 @@ fun GameScreen(
                     onClick = {
                         Log.d("GameScreen", "Showing solution")
                         showSolutionConfirmDialog = false
+                        solutionShowed = true
                         viewModel.showSolution()
                     }
                 ) {
                     Text(
                         stringResource(R.string.show_solution),
-                        color = colors.primary)
+                        color = colors.primary
+                    )
                 }
             },
             dismissButton = {
@@ -271,11 +286,13 @@ fun GameScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        /*viewModel.saveGame()
-                        navController.navigate("start?gameJustSaved=true") {
-                            popUpTo("start") { inclusive = true }
-                        }*/
-                        showSaveDialog = true
+                        if (solutionShowed) {
+                            navController.navigate("start?gameJustSaved=false") {
+                                popUpTo("start") { inclusive = true }
+                            }
+                        } else {
+                            showSaveDialog = true
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -314,17 +331,20 @@ fun GameScreen(
             )
             NumberPad(
                 onNumberSelected = viewModel::onNumberInput,
-                isNotesMode = state.isNotesMode
+                isNotesMode = state.isNotesMode,
+                enabled = !solutionShowed,
             )
             Toolbar(
                 isNotesMode = state.isNotesMode,
                 onNotesClicked = viewModel::toggleNotesMode,
                 onClearClicked = viewModel::clearCell,
                 onHintsClicked = viewModel::showHint,
-                onUndoClicked = viewModel::undo
+                onUndoClicked = viewModel::undo,
+                enabled = !solutionShowed,
             )
             ShowSolutionButton(
-                onSolutionClicked = { showSolutionConfirmDialog = true }
+                onSolutionClicked = { showSolutionConfirmDialog = true },
+                enabled = !solutionShowed
             )
         }
 
@@ -342,7 +362,12 @@ fun GameScreen(
         if (showCompletedDialog) {
             AlertDialog(
                 onDismissRequest = { showCompletedDialog = false },
-                title = { Text(stringResource(R.string.congratulations), color = colors.onBackground) },
+                title = {
+                    Text(
+                        stringResource(R.string.congratulations),
+                        color = colors.onBackground
+                    )
+                },
                 text = {
                     Text(
                         stringResource(R.string.completed_message) + " ${formatTime(state.timer)}!",
@@ -594,6 +619,7 @@ fun NotesGrid(notes: Set<Int>) {
 fun NumberPad(
     onNumberSelected: (Int) -> Unit,
     isNotesMode: Boolean,
+    enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
 
@@ -609,12 +635,17 @@ fun NumberPad(
                 numberRow.forEach { number ->
                     TextButton(
                         onClick = { onNumberSelected(number) },
+                        enabled = enabled,
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = number.toString(),
                             fontSize = 30.sp,
-                            color = if (isNotesMode) Color.Blue else colors.onBackground
+                            color = when {
+                                !enabled -> colors.onBackground.copy(alpha = 0.38f)
+                                isNotesMode -> Color.Blue
+                                else -> colors.onBackground
+                            }
                         )
                     }
                 }
@@ -630,6 +661,7 @@ fun Toolbar(
     onHintsClicked: () -> Unit,
     onClearClicked: () -> Unit,
     onUndoClicked: () -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
 
@@ -639,24 +671,38 @@ fun Toolbar(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        IconButton(onClick = onUndoClicked) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo")
-
+        IconButton(onClick = onUndoClicked, enabled = enabled) {
+            Icon(
+                Icons.AutoMirrored.Filled.Undo, contentDescription = "Undo",
+                tint = if (enabled) colors.onBackground else colors.onBackground.copy(alpha = 0.38f)
+            )
         }
-        IconButton(onClick = onClearClicked) {
-            Icon(Icons.Default.Delete, contentDescription = "Clear")
+        IconButton(onClick = onClearClicked, enabled = enabled) {
+            Icon(
+                Icons.Default.Delete, contentDescription = "Clear",
+                tint = if (enabled) colors.onBackground else colors.onBackground.copy(alpha = 0.38f)
+            )
         }
         IconButton(
-            onClick = onNotesClicked
+            onClick = onNotesClicked,
+            enabled = enabled,
         ) {
             Icon(
                 Icons.Default.Edit,
                 contentDescription = "Notes",
-                tint = if (isNotesMode) Color.Blue else colors.onBackground
+                tint =
+                    when {
+                        isNotesMode -> Color.Blue
+                        !enabled -> colors.onBackground.copy(alpha = 0.38f)
+                        else -> colors.onBackground
+                    },
             )
         }
-        IconButton(onClick = onHintsClicked) {
-            Icon(Icons.Default.Lightbulb, contentDescription = "Hints")
+        IconButton(onClick = onHintsClicked, enabled = enabled) {
+            Icon(
+                Icons.Default.Lightbulb, contentDescription = "Hints",
+                tint = if (enabled) colors.onBackground else colors.onBackground.copy(alpha = 0.38f)
+            )
         }
     }
 }
@@ -664,6 +710,7 @@ fun Toolbar(
 @Composable
 fun ShowSolutionButton(
     onSolutionClicked: () -> Unit,
+    enabled: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -674,6 +721,7 @@ fun ShowSolutionButton(
     ) {
         Button(
             onClick = onSolutionClicked,
+            enabled = enabled,
             modifier = Modifier.fillMaxWidth(0.8f)
         ) {
             Text(stringResource(R.string.show_solution_button))
