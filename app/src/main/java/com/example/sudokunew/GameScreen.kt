@@ -160,6 +160,11 @@ fun GameScreen(
         if (!solutionShowed) {
             showSaveDialog = true
         }
+        else{
+            navController.navigate("start?gameJustSaved=false") {
+                popUpTo("start") { inclusive = true }
+            }
+        }
     }
 
     if (showSaveDialog) {
