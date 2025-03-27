@@ -157,7 +157,7 @@ fun GameScreen(
     }*/
 
     BackHandler {
-        if (!solutionShowed) {
+        if (!solutionShowed&&!state.isComplete) {
             showSaveDialog = true
         }
         else{
@@ -291,7 +291,7 @@ fun GameScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (solutionShowed) {
+                        if (solutionShowed || state.isComplete) {
                             navController.navigate("start?gameJustSaved=false") {
                                 popUpTo("start") { inclusive = true }
                             }
