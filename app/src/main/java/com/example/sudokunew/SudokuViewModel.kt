@@ -90,26 +90,44 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         startTimer()
     }
 
+    private fun solve(board: Array<Array<Int>>,stopAt:Int = 1):Int{
+        var solutionsFound = 0
 
-    private fun fillBoard(board: Array<Array<Int>>): Boolean {
-        for (row in 0 until 9) {
-            for (col in 0 until 9) {
-                if (board[row][col] == 0) {
-                    val numbers = (1..9).shuffled()
-                    for (number in numbers) {
-                        if (isValid(board, row, col, number)) {
-                            board[row][col] = number
-                            if (fillBoard(board)) {
-                                return true
-                            }
-                            board[row][col] = 0
-                        }
+        fun backtrack(row: Int = 0, col: Int = 0): Boolean {
+            val numbers = (1..9).shuffled()
+            if (row == 9) {
+                solutionsFound++
+                return solutionsFound < stopAt // Stop if we found more than one solution
+            }
+
+            val nextRow = if (col == 8) row + 1 else row
+            val nextCol = if (col == 8) 0 else col + 1
+
+            // If this cell is already filled, move to next cell
+            if (board[row][col] != 0) {
+                return backtrack(nextRow, nextCol)
+            }
+
+            // Try each number in this cell
+            for (num in numbers) {
+                if (isValid(board, row, col, num)) {
+                    board[row][col] = num
+                    if (!backtrack(nextRow, nextCol)) {
+                        return false // Stop if we found multiple solutions
                     }
-                    return false
+                    board[row][col] = 0 // Backtrack
                 }
             }
+
+            return true
         }
-        return true //Board filled
+        backtrack()
+        return solutionsFound
+    }
+
+
+    private fun fillBoard(board: Array<Array<Int>>) {
+        solve(board)
     }
 
     private fun removeNumbers(board: Array<Array<Int>>, cellsToRemove: Int): Int {
@@ -118,9 +136,7 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         // First, collect all filled positions with their values
         for (row in 0 until 9) {
             for (col in 0 until 9) {
-                if (board[row][col] != 0) {
-                    positions.add(Triple(row, col, board[row][col]))
-                }
+                positions.add(Triple(row, col, board[row][col]))
             }
         }
 
@@ -150,39 +166,13 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
     }
 
     private fun hasUniqueSolution(board: Array<Array<Int>>): Boolean {
-        var solutionsFound = 0
         val tempBoard = Array(9) { row -> Array(9) { col -> board[row][col] } }
 
-        fun backtrack(row: Int = 0, col: Int = 0): Boolean {
-            if (row == 9) {
-                solutionsFound++
-                return solutionsFound < 2 // Stop if we found more than one solution
-            }
-
-            val nextRow = if (col == 8) row + 1 else row
-            val nextCol = if (col == 8) 0 else col + 1
-
-            // If this cell is already filled, move to next cell
-            if (tempBoard[row][col] != 0) {
-                return backtrack(nextRow, nextCol)
-            }
-
-            // Try each number in this cell
-            for (num in 1..9) {
-                if (isValid(tempBoard, row, col, num)) {
-                    tempBoard[row][col] = num
-                    if (!backtrack(nextRow, nextCol)) {
-                        return false // Stop if we found multiple solutions
-                    }
-                    tempBoard[row][col] = 0 // Backtrack
-                }
-            }
-
-            return true
+        val solutionCount = solve(tempBoard, stopAt = 2)
+        if(solutionCount > 1) {
+            return false // More than one solution found
         }
-
-        backtrack()
-        return solutionsFound == 1
+        return true // Unique solution found
     }
 
     private fun isValid(board: Array<Array<Int>>, row: Int, col: Int, number: Int): Boolean {
