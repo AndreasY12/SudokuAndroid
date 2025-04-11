@@ -90,40 +90,52 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
         startTimer()
     }
 
-    private fun solve(board: Array<Array<Int>>,stopAt:Int = 1):Int{
+    private fun solve(board: Array<Array<Int>>, stopAt: Int = 1): Int {
         var solutionsFound = 0
 
         fun backtrack(row: Int = 0, col: Int = 0): Boolean {
-            val numbers = (1..9).shuffled()
+            val numbers = (1..9).shuffled() // Shuffle to add randomness in solving paths
+
+            // If we've reached past the last row, the board is filled and valid
             if (row == 9) {
                 solutionsFound++
-                return solutionsFound < stopAt // Stop if we found more than one solution
+                // Return false if we've found enough solutions (to stop early)
+                return solutionsFound < stopAt
             }
 
+            // Move to the next cell
             val nextRow = if (col == 8) row + 1 else row
             val nextCol = if (col == 8) 0 else col + 1
 
-            // If this cell is already filled, move to next cell
+            // If current cell is already filled, skip to the next one
             if (board[row][col] != 0) {
                 return backtrack(nextRow, nextCol)
             }
 
-            // Try each number in this cell
+            // Try placing numbers 1–9 in this empty cell
             for (num in numbers) {
                 if (isValid(board, row, col, num)) {
-                    board[row][col] = num
+                    board[row][col] = num // Tentatively place the number
+
+                    // Recursively try to solve the rest of the board
+                    // If it returns false, it means we've found enough solutions
+                    // So we return false too to stop further exploration
                     if (!backtrack(nextRow, nextCol)) {
-                        return false // Stop if we found multiple solutions
+                        return false
                     }
-                    board[row][col] = 0 // Backtrack
+
+                    board[row][col] = 0 // Backtrack: undo the placement
                 }
             }
 
+            // If no number fits, or we’re still under stopAt, continue backtracking
             return true
         }
+
         backtrack()
         return solutionsFound
     }
+
 
 
     private fun fillBoard(board: Array<Array<Int>>) {
