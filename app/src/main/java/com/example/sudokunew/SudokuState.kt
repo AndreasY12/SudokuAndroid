@@ -24,5 +24,6 @@ data class SudokuState(
     val difficulty: Difficulty = Difficulty.EASY,
     val isNotesMode: Boolean = false,
     val isComplete: Boolean = false,
-    val timer:Long = 0L
+    val timer:Long = 0L,
+    val highlightedHintCell: Pair<Int, Int>? = null
 )

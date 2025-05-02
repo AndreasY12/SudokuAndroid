@@ -345,7 +345,14 @@ class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {
             }
 
             // Return the new state with the updated board
-            currentState.copy(board = newBoard)
+            currentState.copy(board = newBoard, highlightedHintCell = Pair(row, col))
+        }
+
+        viewModelScope.launch {
+            delay(2000) // Show the hint for 2 seconds
+            _state.update { currentState ->
+                currentState.copy(highlightedHintCell = null)
+            }
         }
 
         // Check if the puzzle is now complete after applying the hint

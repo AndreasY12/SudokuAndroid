@@ -332,6 +332,7 @@ fun GameScreen(
             )
             SudokuGrid(
                 board = state.board,
+                highlightedHintCell = state.highlightedHintCell,
                 onCellSelected = viewModel::onCellSelected
             )
             NumberPad(
@@ -465,6 +466,7 @@ fun GameScreen(
 fun SudokuGrid(
     board: List<List<SudokuCell>>,
     onCellSelected: (Int, Int) -> Unit,
+    highlightedHintCell: Pair<Int, Int>?,
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
@@ -500,6 +502,7 @@ fun SudokuGrid(
                     rowStart = rowStart,
                     colStart = colStart,
                     selectedPosition = selectedPosition,
+                    highlightedHintCell = highlightedHintCell,
                     onCellSelected = onCellSelected,
                     modifier = Modifier.border(2.dp, colors.onBackground)
                 )
@@ -514,6 +517,7 @@ fun SudokuSubGrid(
     rowStart: Int,
     colStart: Int,
     selectedPosition: Pair<Int, Int>?,
+    highlightedHintCell: Pair<Int, Int>?,
     onCellSelected: (Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -524,10 +528,13 @@ fun SudokuSubGrid(
                     val cell = board[row][col]
                     val isInSelectedRow = selectedPosition?.first == row
                     val isInSelectedColumn = selectedPosition?.second == col
+                    val isHintHighlighted = highlightedHintCell?.first == row &&
+                            highlightedHintCell.second == col
 
                     SudokuCell(
                         cell = cell,
                         isInSelectedLine = isInSelectedRow || isInSelectedColumn,
+                        isHintHighlighted = isHintHighlighted,
                         onClick = { onCellSelected(row, col) },
                         modifier = Modifier
                             .weight(1f)
@@ -543,6 +550,7 @@ fun SudokuSubGrid(
 fun SudokuCell(
     cell: SudokuCell,
     isInSelectedLine: Boolean,
+    isHintHighlighted: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -550,6 +558,7 @@ fun SudokuCell(
 
     // Define background color based on cell state
     val backgroundColor = when {
+        isHintHighlighted -> colors.tertiary.copy(alpha = 0.5f)  // Highlight for hint
         cell.isSelected -> colors.secondary.copy(alpha = 0.3f)
         !cell.isValid -> colors.error.copy(alpha = 0.3f)
         isInSelectedLine -> colors.secondary.copy(alpha = 0.1f) // Subtle highlight for row/column
