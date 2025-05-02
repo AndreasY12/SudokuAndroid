@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.data
 
 import androidx.room.Dao
 import androidx.room.Delete

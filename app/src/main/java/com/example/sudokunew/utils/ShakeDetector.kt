@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.utils
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent

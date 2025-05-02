@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.screens
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.sudokunew.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

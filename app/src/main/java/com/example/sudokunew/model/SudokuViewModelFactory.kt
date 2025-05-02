@@ -1,7 +1,8 @@
-package com.example.sudokunew
+package com.example.sudokunew.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.sudokunew.data.SudokuDatabase
 
 class SudokuViewModelFactory(
     private val database: SudokuDatabase

@@ -1,5 +1,7 @@
-import com.example.sudokunew.SudokuGameEntity
-import com.example.sudokunew.SudokuState
+package com.example.sudokunew.utils
+
+import com.example.sudokunew.data.SudokuGameEntity
+import com.example.sudokunew.model.SudokuState
 
 /**
  * Extension functions to convert between domain models and database entities

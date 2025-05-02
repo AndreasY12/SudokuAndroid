@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.screens
 
 import android.content.Context
 import android.hardware.Sensor
@@ -69,6 +69,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.sudokunew.R
+import com.example.sudokunew.data.SudokuDatabase
+import com.example.sudokunew.model.Difficulty
+import com.example.sudokunew.model.SudokuCell
+import com.example.sudokunew.model.SudokuViewModel
+import com.example.sudokunew.model.SudokuViewModelFactory
+import com.example.sudokunew.utils.ShakeDetector
+import com.example.sudokunew.utils.SoundPlayer
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.emitter.Emitter

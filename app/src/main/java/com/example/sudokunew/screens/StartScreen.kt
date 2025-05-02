@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -53,6 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.sudokunew.R
+import com.example.sudokunew.model.Difficulty
+import com.example.sudokunew.utils.LanguageChangeHelper
 import kotlinx.coroutines.delay
 
 

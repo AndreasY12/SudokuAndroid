@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.data
 
 import android.content.Context
 import androidx.room.Database

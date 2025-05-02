@@ -1,7 +1,9 @@
-package com.example.sudokunew
+package com.example.sudokunew.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sudokunew.data.SudokuDatabase
+import com.example.sudokunew.data.SudokuGameEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -11,8 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import toEntity
-import toState
+import com.example.sudokunew.utils.toEntity
+import com.example.sudokunew.utils.toState
 import java.util.Stack
 
 class SudokuViewModel(private val database: SudokuDatabase) : ViewModel() {

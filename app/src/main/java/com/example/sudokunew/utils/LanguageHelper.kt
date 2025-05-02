@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.sudokunew
+package com.example.sudokunew.utils
 
 import android.app.LocaleManager
 import android.content.Context

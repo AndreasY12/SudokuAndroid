@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.model
 
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package com.example.sudokunew
+package com.example.sudokunew.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,6 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.sudokunew.model.Difficulty
+import com.example.sudokunew.screens.AboutScreen
+import com.example.sudokunew.screens.GameScreen
+import com.example.sudokunew.screens.LoadGameScreen
+import com.example.sudokunew.screens.RulesScreen
+import com.example.sudokunew.screens.StartScreen
 
 @Composable
 fun SudokuNavHost(

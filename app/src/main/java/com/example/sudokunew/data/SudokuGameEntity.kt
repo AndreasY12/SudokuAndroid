@@ -1,8 +1,10 @@
-package com.example.sudokunew
+package com.example.sudokunew.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.example.sudokunew.model.Difficulty
+import com.example.sudokunew.model.SudokuCell
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
