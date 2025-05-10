@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -61,7 +59,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -101,7 +98,6 @@ fun GameScreen(
     var showSaveDialog by rememberSaveable { mutableStateOf(false) }
     var showCompletedDialog by rememberSaveable { mutableStateOf(false) }
     var showSolutionConfirmDialog by rememberSaveable { mutableStateOf(false) }
-    val layoutDirection = LocalLayoutDirection.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
     val soundPlayer = SoundPlayer(LocalContext.current)
     var solutionShowed by rememberSaveable { mutableStateOf(false) }
@@ -272,14 +268,7 @@ fun GameScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                start = WindowInsets.safeDrawing
-                    .asPaddingValues()
-                    .calculateStartPadding(layoutDirection),
-                end = WindowInsets.safeDrawing
-                    .asPaddingValues()
-                    .calculateEndPadding(layoutDirection)
-            ),
+            .padding(WindowInsets.navigationBars.asPaddingValues()),
         containerColor = colors.background, contentColor = colors.onBackground, topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.largeTopAppBarColors(
