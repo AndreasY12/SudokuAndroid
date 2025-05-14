@@ -64,7 +64,6 @@ We welcome contributions from everyone! 🎉 To get started:
 3. Commit your changes. 💾  
 4. Push to your fork and open a Pull Request. 🔀  
 
-Make sure to follow the [Code of Conduct](CODE_OF_CONDUCT.md) and adhere to the project's coding standards.
 
 ---
 
