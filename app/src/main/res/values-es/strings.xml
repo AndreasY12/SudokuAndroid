@@ -25,7 +25,7 @@
     <string name="undo_action">Deshacer: Revierte la última acción.</string>
     <string name="clear_action">Borrar: Borra una celda seleccionada.</string>
     <string name="notes_action">Notas: Te permite ingresar números como notas en una celda.</string>
-    <string name="hints_action">Pistas: Proporciona un consejo útil.</string>
+    <string name="hints_action">Pistas: Coloca un número al azar en el tablero</string>
     <string name="shake_action">¡Agite el dispositivo para mostrar la solución!</string>
     <string name="ok">OK</string>
     <string name="delete_all_games_title">Eliminar todas las partidas</string>

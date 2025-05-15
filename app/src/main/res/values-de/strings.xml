@@ -25,7 +25,7 @@
     <string name="undo_action">Rückgängig: Macht die letzte Aktion rückgängig.</string>
     <string name="clear_action">Löschen: Löscht eine ausgewählte Zelle.</string>
     <string name="notes_action">Notizen: Ermöglicht das Eintragen von Zahlen als Notizen in eine Zelle.</string>
-    <string name="hints_action">Hinweise: Gibt einen hilfreichen Tipp.</string>
+    <string name="hints_action">" Hinweise: Platziert eine Zahl zufällig auf dem Brett"</string>
     <string name="shake_action">Schütteln Sie das Gerät, um die Lösung anzuzeigen!</string>
     <string name="ok">OK</string>
     <string name="delete_all_games_title">Alle Spiele löschen</string>

@@ -31,7 +31,7 @@
     <string name="undo_action">Undo: Reverses the last action.</string>
     <string name="clear_action">Clear: Clears a selected cell.</string>
     <string name="notes_action">Notes: Allows you to enter numbers as notes in a cell.</string>
-    <string name="hints_action">Hints: Provides a helpful tip.</string>
+    <string name="hints_action">Hints: Places a number randomly on the board</string>
     <string name="shake_action">Shake the phone to show the solution!</string>
     <string name="ok">OK</string>
     <string name="delete_all_games_title">Delete all games</string>

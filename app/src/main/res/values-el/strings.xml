@@ -27,7 +27,7 @@
     <string name="undo_action">Αναίρεση: Αντιστρέφει την τελευταία ενέργεια.</string>
     <string name="clear_action">Διαγραφή: Διαγράφει ένα επιλεγμένο κελί.</string>
     <string name="notes_action">Σημειώσεις: Σας επιτρέπει να εισάγετε αριθμούς ως σημειώσεις σε ένα κελί.</string>
-    <string name="hints_action">Συμβουλές: Παρέχει μια χρήσιμη συμβουλή.</string>
+    <string name="hints_action">Συμβουλές: Τοποθετεί έναν αριθμό τυχαία στον πίνακα</string>
     <string name="shake_action">Ανακινήστε την συσκευή για να φανεί η λύση!</string>
     <string name="ok">Εντάξει</string>
     <string name="delete_all_games_title">Διαγραφή όλων των παιχνιδιών</string>
