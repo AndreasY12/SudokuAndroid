@@ -69,13 +69,13 @@ We welcome contributions from everyone! 🎉 To get started:
 
 ## 📜 License
 
-This project is licensed under the [MIT License](LICENSE). 📝  
+This project is licensed under the [MIT License]. 📝  
 
 ---
 
 ## 🌟 Show Your Support
 
-If you like this project, please consider giving it a ⭐️ on GitHub! Every star helps us grow and improve. 💖  
+If you like this project, please consider giving it a ⭐️ on GitHub! Every star helps grow and improve. 💖  
 
 ---
 
